@@ -1,0 +1,44 @@
+﻿@model car_kaashiv_web_app.Models.DTOs.LoginDto   
+@{
+    ViewData["Title"] = "Login";
+ }
+@if(TempData["Message"] != null)
+{
+ <div class="alert alert-info">@TempData["Message"]</div>     
+}
+
+    <div class="container mt-5 d-flex justify-content-center">
+        <div class="card p-4 shadow-lg" style="max-width:400px;width:100%">
+        <h2 class="text-center mb-4">User Login</h2>
+        <form asp-action="Login" asp-controller="User" method="post">           
+        
+            <div class="mb-3">
+                 <label asp-for="Phone" class="form-label"></label>
+                 <input asp-for="Phone" type="tel" pattern="[0-9]{3,15}" onkeypress="return event.charCode >=48 &&
+                event.charCode <=57" class="form-control" />
+                <span asp-validation-for="Phone" class="text-danger"></span>
+            </div>                 
+
+            <div class="mb-3">
+                <label class="form-label">Password</label>
+                <input asp-for="Password" type="password" class="form-control" />
+                <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
+
+            <div class="d-grid gap-2 mb-3">
+                <button type="submit" class="btn btn-primary">Login</button>
+            </div>
+            
+             <div class="mt-3 d-flex justify-content-between align-items-center ">
+                <a asp-controller="User" asp-action="Register" class="btn btn-outline-primary ">Register</a>
+            <a href="#" class="link-secondary">Forgot password?</a>           
+            </div>       
+         </form>
+        </div>     
+    </div>
+
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    
+}
