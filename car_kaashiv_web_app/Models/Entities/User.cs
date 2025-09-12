@@ -1,18 +1,34 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace car_kaashiv_web_app.Models.Entities
 {
-    public class User
+    public class TableUser 
     {
-        [Key]
-        public int U_Id {  get; set; }  //Auto-increment Primary key
+        [Key]        
         
+        
+        [Column("u_id")] // Db Column name
+        public int Id {  get; set; }  // Primary key Auto-increment 
+
         [Required, StringLength(50)]
-        public string? U_Name { get; set; }
+        [Column("u_name")]
+        public string? Name { get; set; }    // non-nullable with default
         [Required,StringLength(50)]
-        public string? U_Phone { get; set; }
+        [Column("u_phone")]
+        public string?Phone { get; set; }
+
+
+        [Required,StringLength(50)]
+        [Column("u_email")]
+        public String? Email { get; set; }
+       
         [Required,StringLength(255)]
-        public string? U_Pass { get; set; }
-   
+        [Column("u_pass")]
+        public string? PasswordHash { get; set; } 
+
+        [Column("idt")]  // date time on idt column  db 
+        public  DateTime CreatedAt { get; set; }
+
     }
 }

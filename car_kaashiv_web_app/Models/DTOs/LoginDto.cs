@@ -15,6 +15,6 @@ namespace car_kaashiv_web_app.Models.DTOs
         [StringLength(10,MinimumLength =10,ErrorMessage = "Password must be 10 characters long")]
         [DataType(DataType.Password)]
         public String? Password { get; set; }
-
+        
     }
 }

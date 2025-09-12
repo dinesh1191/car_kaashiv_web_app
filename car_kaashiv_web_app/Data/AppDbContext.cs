@@ -7,6 +7,6 @@ namespace car_kaashiv_web_app.Data
     public class AppDbContext : DbContext
     {
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
-        public DbSet<User> tbl_user { get; set; } //Maps to DB Table
+        public DbSet<TableUser> tbl_user { get; set; } //Maps to DB Table
     }
 }

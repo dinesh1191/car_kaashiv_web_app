@@ -1,6 +1,7 @@
-using System.Diagnostics;
 using car_kaashiv_web_app.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Diagnostics;
 
 namespace car_kaashiv_web_app.Controllers
 {
@@ -11,8 +12,8 @@ namespace car_kaashiv_web_app.Controllers
         public HomeController(ILogger<HomeController> logger)
         {
             _logger = logger;
-        }    
-
+        }
+        [AllowAnonymous]
         public IActionResult Privacy()
         {
             return View();

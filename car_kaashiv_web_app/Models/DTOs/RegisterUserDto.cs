@@ -1,17 +1,21 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace car_kaashiv_web_app.Models.DTOs
 {
     public class RegisterUserDto
     {
-        [StringLength(3, ErrorMessage = "Name must 3 characters minimum,maximum 25 characters")]
+        [Required]
+        public DateTime createdAt { get; set; }
+
+        [MinLength(3, ErrorMessage = "Name must 3 characters minimum,maximum 25 characters")]
+        [Required(ErrorMessage = "Name number required")]
         public String? Name { get; set; }
 
-        [MinLength(10, ErrorMessage = "Phone number must be at least 10 characters")]
+        [RegularExpression(@"^[6-9]\d{9}$", ErrorMessage = "Phone number must start with a digit from 6 to 9 and be 10 digits long")]
+        [Required(ErrorMessage = "Phone number required")]
         public String? Phone { get; set; }
         
-        
-        [DataType(DataType.Password)]
         [Required(ErrorMessage = "Email is required")] 
         public String? Email { get; set; }
 
