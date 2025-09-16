@@ -8,16 +8,12 @@
 
   <ItemGroup>
     <Compile Remove="Filters\**" />
-    <Compile Remove="NewFolder\**" />
     <Compile Remove="Views\Home\NewFolder\**" />
     <Content Remove="Filters\**" />
-    <Content Remove="NewFolder\**" />
     <Content Remove="Views\Home\NewFolder\**" />
     <EmbeddedResource Remove="Filters\**" />
-    <EmbeddedResource Remove="NewFolder\**" />
     <EmbeddedResource Remove="Views\Home\NewFolder\**" />
     <None Remove="Filters\**" />
-    <None Remove="NewFolder\**" />
     <None Remove="Views\Home\NewFolder\**" />
   </ItemGroup>
 

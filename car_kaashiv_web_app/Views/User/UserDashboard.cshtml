@@ -1,15 +1,16 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿
 @{
-    ViewData["Tittle"] = "UserDashboardMaple";
+    ViewData["Tittle"] = "UserDashboard";
 }
 @if (TempData["Message"] != null)
 {
     <div class="alert alert-success">@TempData["Message"]</div>
 }
-<div>
+<h2></h2>
+<h2></h2>
+<h2>Welcome, @User?.Identity?.Name</h2>
 
-</div>
-<h2>Welcome, @ViewBag.UserName</h2>
-<p>Your phone number: @ViewBag.Phone</p>
+<p>Your phone number: @User?.FindFirst(System.Security.Claims.ClaimTypes.MobilePhone)?.Value</p>
+
+
+

@@ -1,4 +1,5 @@
 ﻿using BCrypt.Net;
+using System.Security.Claims;
 using car_kaashiv_web_app.Data;
 using car_kaashiv_web_app.Models.DTOs;
 using car_kaashiv_web_app.Models.Entities;
@@ -12,8 +13,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System.Data;
 using System.Numerics;
-using System.Security.Claims;
+
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Model;
+using car_kaashiv_web_app.Services;
 
 
 namespace car_kaashiv_web_app.Controllers
@@ -22,31 +24,35 @@ namespace car_kaashiv_web_app.Controllers
     {
         private readonly string? _connectionString;
         private readonly AppDbContext _context;
+        private AuthenticationProperties? authProperties;
+        private readonly ILogger<HomeController> _logger;    
+
         // inject IConfiguration +AppContext      
-        public UserController(IConfiguration configuration, AppDbContext context)
+        public UserController(IConfiguration configuration, ILogger<HomeController> logger, AppDbContext context)
         {
             _connectionString = configuration.GetConnectionString("DefaultConnection");
             _context = context;
+            _logger = logger;
         }
         [HttpGet]
         [AllowAnonymous]
-        public IActionResult UnAuthorized()
+        public IActionResult UnAuthorized()//<--Marking an action with [AllowAnonymous] explicitly overrides this rule and skips the authentication checks.
         {
             return View();
         }
         //Show Register page
         [HttpGet]
         [AllowAnonymous]
-        public IActionResult Register()
+        public IActionResult Register()//<--Marking an action with [AllowAnonymous] explicitly overrides this rule and skips the authentication checks.
         {
             return View();
         }
         //show Login Page
         [HttpGet]
         [AllowAnonymous]
-        public IActionResult Login()
+        public IActionResult Login()//<--Marking an action with [AllowAnonymous] explicitly overrides this rule and skips the authentication checks.
         {
-                 
+            
             return View();
                     
         }
@@ -62,35 +68,27 @@ namespace car_kaashiv_web_app.Controllers
                 Response.Cookies.Delete(cookie);
             }               
             TempData["Message"] = "You have been logged out.";
-            TempData["MessageType"] = "warning";
+            TempData["MessageType"] = "warning"; // for css
             return RedirectToAction("Login", "User");
         }
-        
-    
+
+        [AllowAnonymous]
         public IActionResult UserDashboard()
-        {
-            var phone = HttpContext.Session.GetString("UserPhone");
-            var name = HttpContext.Session.GetString("UserName");
-            //if(string.IsNullOrEmpty(phone) || string.IsNullOrEmpty(name))
-            //{
-            //    TempData["Message"] = "Please login first";
-            //    return RedirectToAction("Login", "User");
-            //}
-            
-            ViewBag.Phone = phone;
-            ViewBag.UserName = name;
+        {          
             return View();
         }
+
         //Handle Register Post
         [HttpPost]
-        public IActionResult Register(RegisterUserDto dto)
-        {
+        [AllowAnonymous]    //<--Marking an action with [AllowAnonymous] explicitly overrides this rule and skips the authentication checks. 
+        public async Task<IActionResult> Register(RegisterUserDto dto)
+        {               
 
             if (!ModelState.IsValid)
             {
-                return View();
+                return View(dto);
             }
-            //Map DTO -> Entity;
+            //Map DTO -> Entity-> User.cs;
             //duplicate phone number restricted
             if (_context.tbl_user.Any(u => u.Phone == dto.Phone))
             {
@@ -106,66 +104,32 @@ namespace car_kaashiv_web_app.Controllers
                 CreatedAt = DateTime.UtcNow
             };
             _context.tbl_user.Add(user);
-            _context.SaveChanges();
-
-            //Auto login (simple session based)
-            //?? coalesce to an empty string when storing session
-            HttpContext.Session.SetString("UserName", user?.Name ?? string.Empty);
-            HttpContext.Session.SetString("UserPhone", user?.Phone ?? string.Empty);
+            await _context.SaveChangesAsync(); // wait till db execution completes
+            // Build claims for cookie authentication
+            var claims = ClaimsHelper.BuildUserClaims(user);
+            var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+            var authProperties = new AuthenticationProperties
+            {
+                IsPersistent = true,
+                ExpiresUtc = DateTimeOffset.UtcNow.AddHours(1)
+            };
+            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
+                new ClaimsPrincipal(claimsIdentity), authProperties);
             TempData["Message"] = "User registered successfully!";
-            var check = HttpContext.Session.GetString("UserName");
-            Console.WriteLine($"Session test;{check}");
-            return RedirectToAction("UserDashboard","User");
-         
+            var isAuth = User.Identity?.IsAuthenticated ?? false;           
+            _logger.LogInformation("User {UserName} with phone {Phone} logged in at {Time}", user?.Name, user?.Phone, DateTime.UtcNow);
+            return RedirectToAction("UserDashboard", "User");     
         }
 
         [HttpPost]
-        [AllowAnonymous]
+        [AllowAnonymous]   //<--Marking an action with [AllowAnonymous] explicitly overrides this rule and skips the authentication checks. 
         [ValidateAntiForgeryToken] // <--- Anti-forgery check here
         //cross-site requests tokens,
         public async Task<IActionResult> Login(LoginDto dto)
-        {
-
-            //if (!ModelState.IsValid)
-            //{
-            //    return View(dto);
-            //}
-            //Map DTO -> Entity
-            // using (var con = new SqlConnection(_connectionString))
-            // {
-            //     var parameters = new DynamicParameters();
-            //     parameters.Add("@u_phone", dto.Phone);
-            //     parameters.Add("@u_pass", dto.Password);
-            //     parameters.Add("@statusCode", dbType: System.Data.DbType.Int32, direction: ParameterDirection.Output);
-            //     parameters.Add("@statusMessage", dbType: DbType.String, size: 100, direction: ParameterDirection.Output);
-
-            //     con.Execute("sp_AuthenticateUser", parameters, commandType: CommandType.StoredProcedure);
-
-            //     int code = parameters.Get<int>("@statusCode");
-            //     string message = parameters.Get<string>("@statusMessage");
-
-            //     TempData["Message"] = $"Code: {code} - {message}";
-
-            //     if(code == 200)
-            //     {
-            //         // Success → redirect to dashboard or home
-            //         return RedirectToAction("Privacy", "Home");
-
-            //     }
-            //     else
-            //     {                    
-            //         ModelState.AddModelError(string.Empty, message);
-            //         return View(); //stays on Login page
-            //     }
-
-            //}
+        {          
             if (!ModelState.IsValid) return View(dto);
-
-            // Check user existence on table  
-            var user = await _context.tbl_user.FirstOrDefaultAsync(u => u.Phone == dto.Phone);            
-            //the above run query on db
-            //SELECT TOP(1) *FROM tbl_user WHERE Phone = @p0
-
+            // Check user existence on table by unique phone number  
+            var user = await _context.tbl_user.FirstOrDefaultAsync(u => u.Phone == dto.Phone);   // Query will run SELECT TOP(1) *FROM tbl_user WHERE Phone = @p0     
             if (user == null)
             {
                 TempData["Message"] = "User does not exist in database.";
@@ -177,33 +141,23 @@ namespace car_kaashiv_web_app.Controllers
                 TempData["MessageType"] = "error";
                 return View(dto);
             }
-            HttpContext.Session.SetString("UserName", user?.Name ?? string.Empty);
-            HttpContext.Session.SetString("UserPhone", user?.Phone ?? string.Empty);
-            // create claims for cookie identity
-            var claims = new List<Claim>
-            {
-            new Claim(ClaimTypes.Name, user?.Name ?? string.Empty),
-            new Claim(ClaimTypes.MobilePhone, user?.Phone ?? string.Empty)
-            };
-
+            // Build claims
+            var claims = ClaimsHelper.BuildUserClaims(user);
             var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-
             var authProperties = new AuthenticationProperties
             {
-                IsPersistent = true, // stays after browser close (or false if you want only per-session)
-            };
-            // issue the auth cookie
-            await HttpContext.SignInAsync(
-                CookieAuthenticationDefaults.AuthenticationScheme,
-                new ClaimsPrincipal(claimsIdentity),
-                authProperties); 
-
-
+                IsPersistent = true,
+                ExpiresUtc = DateTimeOffset.UtcNow.AddHours(1)
+            };    
+            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
+                new ClaimsPrincipal(claimsIdentity),authProperties);           
+            // Log user info instead of session
+            _logger.LogInformation("User {UserName} with phone {Phone} logged in at {Time}",user?.Name,user?.Phone,DateTime.UtcNow);         
             TempData["Message"] = "Login successful!";
             TempData["MessageType"] = "success";
-
-            var check = HttpContext.Session.GetString("UserName");
-            Console.WriteLine($"Session test;{check}");
+            var name = User.Identity?.Name; // comes from ClaimTypes.Name
+            var phone = User.FindFirst(ClaimTypes.MobilePhone)?.Value;
+            var email = User.FindFirst(ClaimTypes.Email)?.Value;
             return RedirectToAction("UserDashboard", "User");       
         }
     }

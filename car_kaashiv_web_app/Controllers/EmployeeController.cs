@@ -25,7 +25,7 @@ namespace car_kaashiv_web_app.Controllers
             var model = new EmployeeRegisterDto();
             return View(model);
         }
-        [AllowAnonymous]
+       
         public IActionResult EmployeeDashboard()
         {
           
@@ -35,6 +35,7 @@ namespace car_kaashiv_web_app.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [AllowAnonymous] //<--Marking an action with [AllowAnonymous] explicitly overrides this rule and skips the authentication checks. 
         public IActionResult RegisterEmp(EmployeeRegisterDto model)
         {
             

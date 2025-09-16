@@ -11,9 +11,7 @@
 
 </head>
 @using Microsoft.AspNetCore.Http
-@{
-    var IsLoggedIn = !string.IsNullOrEmpty(Context.Session.GetString("UserName"));
-}
+
 <body>
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
@@ -24,39 +22,70 @@
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <template>Username:Context.Session.GetString("UserName")</template> 
-                        @if (IsLoggedIn)
-                          {
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                            </li>
-                            <li>
-                                <form asp-action="Logout" asp-controller="User" method="post">
-                                    <button type="submit" class="btn btn-danger"><i class="bi bi-box-arrow-right"></i></button>
-                                </form>
-                            </li>
+                    <!-- Left side menu -->
+                    <ul class="navbar-nav me-auto">
+                        <!-- 'me-auto' pushes next group to right -->
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                        </li>
+                        <li>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Employee" asp-action="EmployeeRegister">Register Employee</a>
+                        </li>
+                    </ul>                    
+                        <!-- Right side menu -->
+                        <ul class="navbar-nav ms-auto">
+                            @if (User.Identity?.IsAuthenticated ?? false)
+                            {
+                                <li class="nav-item d-flex align-items-center">
+                                    <span class="nav-link">Hello, @User.Identity.Name</span>
+                                </li>
+                                <li class="nav-item">
+                                <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#logoutModal">
+                                    <i class="bi bi-box-arrow-right"></i> Logout
+                                </button>
+                            </li>                                                 
+                            }
+                            else
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="User" asp-action="Login">Login</a>
+                                </li>
+                            
+                            }
+                        </ul>                        
+                </div>             
+           
+            </div>            
+        </nav>
+        <div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content border-0 shadow-lg">
+                    <div class="modal-header bg-danger text-white">
+                        <h5 class="modal-title" id="logoutModalLabel">Confirm Logout</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        Are you sure you want to log out?
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
 
-                        }
-                        else
-                        {
-
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                            </li>
-                            <li>
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Employee" asp-action="EmployeeRegister">Register Employee</a>
-                            </li>
-                        }
-
-                    </ul>
+                        <!-- Logout Form -->
+                        <form asp-action="Logout" asp-controller="User" method="post" class="d-inline">
+                            <button type="submit" class="btn btn-danger">Yes, Logout</button>
+                        </form>
+                    </div>
                 </div>
             </div>
-        </nav>
+        </div>
+         
     </header>
     <div class="container">
         <main role="main" class="pb-3">
-            @RenderBody()
+            @RenderBody()           
         </main>
     </div>
 
