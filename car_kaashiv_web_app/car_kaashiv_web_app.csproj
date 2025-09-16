@@ -7,22 +7,18 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="NewFolder1\**" />
+    <Compile Remove="Filters\**" />
     <Compile Remove="NewFolder\**" />
     <Compile Remove="Views\Home\NewFolder\**" />
-    <Compile Remove="Views\NewFolder\**" />
-    <Content Remove="NewFolder1\**" />
+    <Content Remove="Filters\**" />
     <Content Remove="NewFolder\**" />
     <Content Remove="Views\Home\NewFolder\**" />
-    <Content Remove="Views\NewFolder\**" />
-    <EmbeddedResource Remove="NewFolder1\**" />
+    <EmbeddedResource Remove="Filters\**" />
     <EmbeddedResource Remove="NewFolder\**" />
     <EmbeddedResource Remove="Views\Home\NewFolder\**" />
-    <EmbeddedResource Remove="Views\NewFolder\**" />
-    <None Remove="NewFolder1\**" />
+    <None Remove="Filters\**" />
     <None Remove="NewFolder\**" />
     <None Remove="Views\Home\NewFolder\**" />
-    <None Remove="Views\NewFolder\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -38,6 +34,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="wwwroot\images\unauthorized.JPG" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
     <PackageReference Include="Dapper" Version="2.1.66" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="8.0.8" />
@@ -47,6 +47,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.7" />
   </ItemGroup>
 
 </Project>

@@ -6,8 +6,16 @@
 
 @if(TempData["Message"] != null)
 {
- <div class="alert alert-info">@TempData["Message"]</div>     
+    var type = TempData["MessageType"]?.ToString();
+    var cssClass = type == "success" ? "success" : "alert-danger";
+    <div class="alert @cssClass">
+        @TempData["Message"]
+    </div>     
 }
+
+
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -31,6 +39,7 @@
         <div class="card p-4 shadow-lg" style="max-width:400px;width:100%">
             <h2 class="text-center mb-4">User Login</h2>
             <form asp-action="Login" asp-controller="User" method="post">
+                @Html.AntiForgeryToken()
 
                 <div class="mb-3">
                     <label asp-for="Phone" class="form-label"></label>

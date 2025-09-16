@@ -1,11 +1,13 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using System.Collections;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace car_kaashiv_web_app.Models.DTOs
 {
-    public class RegisterUserDto
+    public class EmployeeRegisterDto
     {
+         
         [Required]
         public DateTime createdAt { get; set; }
 
@@ -16,9 +18,17 @@ namespace car_kaashiv_web_app.Models.DTOs
         [RegularExpression(@"^[6-9]\d{9}$", ErrorMessage = "Phone number must start with a digit from 6 to 9 and be 10 digits long")]
         [Required(ErrorMessage = "Phone number required")]
         public String? Phone { get; set; }
-        
-        [Required(ErrorMessage = "Email is required")] 
+
+        [Required(ErrorMessage = "Email is required")]
+        [RegularExpression(@"^[a-zA-Z0-9._%+-]+@kaashiv\.com$",ErrorMessage = "Only official kaashiv.com email IDs are allowed")]
         public String? Email { get; set; }
+
+        [Required(ErrorMessage = "Role is required")]
+        //|-> logicalOR operator
+        [RegularExpression("admin|staff", ErrorMessage ="Please select a valid role")]
+        
+        public string? Role { get; set; }
+        public List<SelectListItem> RoleList { get; set; }
 
         [Required(ErrorMessage = "Password is required")]
         [RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+=\[{\]};:<>|./?,-]).{8,10}$",
@@ -26,14 +36,23 @@ namespace car_kaashiv_web_app.Models.DTOs
         [DataType(DataType.Password)]
         public String? Password { get; set; }
 
-        [Required(ErrorMessage = "Confirm Password is required")]        
+        [Required(ErrorMessage = "Confirm Password is required")]
         [DataType(DataType.Password)]
         [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
-        public String? CPassword { get; set;}
+        public String? CPassword { get; set; }
+  
 
-     
+        public EmployeeRegisterDto()
+        {
+            //Initialize the role dropdown list
+            RoleList = new List<SelectListItem>
+            {
+                new SelectListItem { Value = "",Text ="--Select option--"},
+                new SelectListItem { Value = "admin",Text ="Admin"},
+                new SelectListItem { Value = "staff",Text="Staff"}
+            };
+        }
 
     }
-      
-    }
+}
 

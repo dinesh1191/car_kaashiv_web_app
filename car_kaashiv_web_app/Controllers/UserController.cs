@@ -3,12 +3,16 @@ using car_kaashiv_web_app.Data;
 using car_kaashiv_web_app.Models.DTOs;
 using car_kaashiv_web_app.Models.Entities;
 using Dapper;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System.Data;
 using System.Numerics;
+using System.Security.Claims;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Model;
 
 
@@ -23,6 +27,12 @@ namespace car_kaashiv_web_app.Controllers
         {
             _connectionString = configuration.GetConnectionString("DefaultConnection");
             _context = context;
+        }
+        [HttpGet]
+        [AllowAnonymous]
+        public IActionResult UnAuthorized()
+        {
+            return View();
         }
         //Show Register page
         [HttpGet]
@@ -43,12 +53,20 @@ namespace car_kaashiv_web_app.Controllers
         
         public IActionResult Logout()
         {
-            //clear all session values
-            HttpContext.Session.Clear();
+            //clear all session cookies 
+            //Response.Cookies.Delete("UserName");
+            //Response.Cookies.Delete("UserPhone");
+            //clearing all cookies 
+            foreach(var cookie in Request.Cookies.Keys)
+            {
+                Response.Cookies.Delete(cookie);
+            }               
             TempData["Message"] = "You have been logged out.";
+            TempData["MessageType"] = "warning";
             return RedirectToAction("Login", "User");
         }
-      
+        
+    
         public IActionResult UserDashboard()
         {
             var phone = HttpContext.Session.GetString("UserPhone");
@@ -100,8 +118,12 @@ namespace car_kaashiv_web_app.Controllers
             return RedirectToAction("UserDashboard","User");
          
         }
+
         [HttpPost]
-        public IActionResult Login(LoginDto dto)
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken] // <--- Anti-forgery check here
+        //cross-site requests tokens,
+        public async Task<IActionResult> Login(LoginDto dto)
         {
 
             //if (!ModelState.IsValid)
@@ -140,8 +162,8 @@ namespace car_kaashiv_web_app.Controllers
             if (!ModelState.IsValid) return View(dto);
 
             // Check user existence on table  
-            var user = _context.tbl_user.FirstOrDefault(u => u.Phone == dto.Phone);
-             //the above run query on db
+            var user = await _context.tbl_user.FirstOrDefaultAsync(u => u.Phone == dto.Phone);            
+            //the above run query on db
             //SELECT TOP(1) *FROM tbl_user WHERE Phone = @p0
 
             if (user == null)
@@ -151,16 +173,38 @@ namespace car_kaashiv_web_app.Controllers
             }
             if (!BCrypt.Net.BCrypt.Verify(dto.Password, user.PasswordHash))
             {
-                TempData["Message"] = "Invalid password.";                
+                TempData["Message"] = "Invalid password.";
+                TempData["MessageType"] = "error";
                 return View(dto);
-            }           
+            }
             HttpContext.Session.SetString("UserName", user?.Name ?? string.Empty);
             HttpContext.Session.SetString("UserPhone", user?.Phone ?? string.Empty);
-            TempData["Message"] = "Login successful!";
+            // create claims for cookie identity
+            var claims = new List<Claim>
+            {
+            new Claim(ClaimTypes.Name, user?.Name ?? string.Empty),
+            new Claim(ClaimTypes.MobilePhone, user?.Phone ?? string.Empty)
+            };
 
-            //var check = HttpContext.Session.GetString("UserName");
-            //Console.WriteLine($"Session test;{check}");
-                return RedirectToAction("UserDashboard", "User");       
+            var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+
+            var authProperties = new AuthenticationProperties
+            {
+                IsPersistent = true, // stays after browser close (or false if you want only per-session)
+            };
+            // issue the auth cookie
+            await HttpContext.SignInAsync(
+                CookieAuthenticationDefaults.AuthenticationScheme,
+                new ClaimsPrincipal(claimsIdentity),
+                authProperties); 
+
+
+            TempData["Message"] = "Login successful!";
+            TempData["MessageType"] = "success";
+
+            var check = HttpContext.Session.GetString("UserName");
+            Console.WriteLine($"Session test;{check}");
+            return RedirectToAction("UserDashboard", "User");       
         }
     }
 }

@@ -1,6 +1,17 @@
 ﻿@*
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+
 *@
 @{
-    <h2>un authorised</h2>
+    ViewData["Tittle"] = "UnAuthorized";
 }
+@{
+    <div class="d-flex justify-content-center align-items-center bg-dark bg-opacity-75 ; " style="min-height:75vh">
+        <div class="card p-4 shadow-lg text-center" style="max-width: 400px; border-radius: 1rem;">
+            <img src="~/images/unauthorized.jpg" class="img-fluid rounded mb-3" style="max-height: 200px; object-fit: cover;" alt="Unauthorized" />
+            <h4 class="text-danger">Access Denied</h4>
+            <p class="text-muted">You are not authorized to access this page.</p>
+            <a href="~/User/Login" class="btn btn-primary mt-2">Go to Login</a>
+        </div>
+    </div>
+ }
