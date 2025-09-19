@@ -1,6 +1,8 @@
 ﻿using car_kaashiv_web_app.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using car_kaashiv_web_app.Services.Extensions;
+using car_kaashiv_web_app.Models.Enums;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -31,8 +33,8 @@ builder.Services.AddSession(options =>
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, options =>
     {
-        options.LoginPath = "/User/Login";
-        options.AccessDeniedPath = "/Home/Privacy";
+        options.LoginPath = "/Home/Index";
+        options.AccessDeniedPath = "/User/UnAuthorizes";
     });
 
 builder.Services.AddAuthorization();
@@ -55,6 +57,6 @@ app.UseAuthorization();    // then authorization
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=User}/{action=Login}/{id?}");
+    pattern: "{controller=Home}/{action=Index}/{id?}");
 
-app.Run();
+ app.Run();

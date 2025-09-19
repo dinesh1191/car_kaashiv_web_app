@@ -31,9 +31,7 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>
-                        <li>
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Employee" asp-action="EmployeeRegister">Register Employee</a>
-                        </li>
+                      
                     </ul>                    
                         <!-- Right side menu -->
                         <ul class="navbar-nav ms-auto">
@@ -50,8 +48,12 @@
                             }
                             else
                             {
+                         
+                            <li>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Employee" asp-action="EmployeeLogin">Employee Login</a>
+                            </li>
                                 <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="" asp-controller="User" asp-action="Login">Login</a>
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="User" asp-action="Login">User Login</a>
                                 </li>
                             
                             }
@@ -60,6 +62,7 @@
            
             </div>            
         </nav>
+        <!-- Logout #Modal -->
         <div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content border-0 shadow-lg">
@@ -81,10 +84,43 @@
                 </div>
             </div>
         </div>
-         
-    </header>
+        <!-- Error #Modal  -->
+        <div class="modal fade" id="confirmDeleteModal" tabIndex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content border-0 shadow-lg ">
+                    <div class="modal-header bg-danger text-white" >
+                        <h5 class="modal-title">Confirm Delete</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        Are you sure want to delete this record?
+                    </div>
+                    <div class="modal-footer">
+                        <form id="deleteForm" method="post">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" >Cancel</button>
+                            <button type="submit" class="btn btn-danger">Yes, delete</button>
+                        </form>                      
+                    </div>
+                </div>
+            </div>
+        </div> 
+        <!-- Alert #Modal  -->
+        <div class="modal fade" id="alertModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content border-0 shadow">
+                    <div class="modal-header bg-primary text-white">
+                        <h5>Notification</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                      </div>
+                    <div class="modal-body"></div>
+                </div>
+            </div>
+        </div>
+
+  </header>
     <div class="container">
         <main role="main" class="pb-3">
+            <partial name="_AlertPartial" />
             @RenderBody()           
         </main>
     </div>
@@ -96,7 +132,60 @@
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
-    @await RenderSectionAsync("Scripts", required: false)
+    <script src="~/js/site.js" asp-append-version="true"></script> 
+    <script>
+      // for modal controller
+        var deleteModal = document.getElementById('confirmDeleteModal');
+            deleteModal.addEventListener('show.bs.modal',function(event){
+            var button = event.relatedTarget;
+           // Read attributes
+            var controller = button.getAttribute('data-controller');
+            var action = button.getAttribute('data-action');
+            var id = button.getAttribute('data-id');
+            //Build URL dynamically {controller}/{Action}/{id}
+            var form = document.getElementById('deleteForm');
+            form.action = '/' + controller + '/' + action + '/' + id;
+            console.log("form",form, form.action);
+        });
+       // for modal alert
+
+       // document.addEventListener("DOMContentLoaded",function(){
+       //     var alertMessage ='@TempData["AlertMessage"]';
+       //     var alertType = '@TempData["AlertType"]';
+
+       //     if(alertMessage){
+       //         var modalBody = document.getElementById("alertModalBody");
+       //         var modalHeader = document.querySelector("#alertModal .modal-header");
+
+       //         modalBody.innerText = alertMessage;
+
+       //         Change header color based on alert type
+
+       //         modalHeader.classList.remove("bg-primary","bg-success","bg-danger","bg-warning");
+       //         if(alertType === "Success")modalHeader.classList.add("bg-sucess","text-white");
+       //         else if (alertType === "Error")modalHeader.classList.add("bg-danger", "text-white");
+       //         else if (alertType === "Warning")modalHeader.classList.add("bg-warning","text-white");
+       //         else modalHeader.classList.add("bg-primary","text-white");
+
+       //         var alertModal = new bootstrap.Modal(document.getElementById('alertModal'));
+       //         alertModal.show()
+       //     }
+       // });
+
+
+
+
+
+
+
+
+    </script>
+
+    @await RenderSectionAsync("Scripts", required: false);    
 </body>
 </html>
+
+
+
+
+    

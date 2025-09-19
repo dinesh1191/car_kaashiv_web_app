@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Collections;
 using System.ComponentModel.DataAnnotations;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
@@ -19,12 +20,12 @@ namespace car_kaashiv_web_app.Models.DTOs
         [Required(ErrorMessage = "Phone number required")]
         public String? Phone { get; set; }
 
-        [Required(ErrorMessage = "Email is required")]
-        [RegularExpression(@"^[a-zA-Z0-9._%+-]+@kaashiv\.com$",ErrorMessage = "Only official kaashiv.com email IDs are allowed")]
-        public String? Email { get; set; }
+        [Remote(action: "CheckEmail", controller: "Employee", ErrorMessage = "Email already registered")]
+        [RegularExpression(@"^[a-zA-Z0-9._%+-]+@kaashiv\.com$", ErrorMessage = "Only official kaashiv.com email IDs are allowed")]
+        [Required(ErrorMessage = "Official Email Required")]
+        public string? Email { get; set; }
 
-        [Required(ErrorMessage = "Role is required")]
-        //|-> logicalOR operator
+        [Required(ErrorMessage = "Role is required")]        
         [RegularExpression("admin|staff", ErrorMessage ="Please select a valid role")]
         
         public string? Role { get; set; }

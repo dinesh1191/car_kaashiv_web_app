@@ -1,0 +1,23 @@
+﻿@using car_kaashiv_web_app.Services.Extensions
+
+@{
+    var alert = TempData.GetAlert();
+}
+
+@if (alert != null)
+{
+    var alertType = alert.Value.Type?.ToLower(); // e.g., "success", "error"
+    var bootstrapClass = alertType switch
+    {
+        "success" => "alert-success",
+        "error" => "alert-danger",
+        "warning" => "alert-warning",
+        "info" => "alert-info",
+        _ => "alert-secondary"
+    };
+
+    <div class="alert @bootstrapClass alert-dismissible fade show mt-3" role="alert">
+        @alert.Value.Message
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}

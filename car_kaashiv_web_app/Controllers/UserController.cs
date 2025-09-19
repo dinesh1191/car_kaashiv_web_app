@@ -16,6 +16,7 @@ using System.Numerics;
 
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Model;
 using car_kaashiv_web_app.Services;
+using car_kaashiv_web_app.Extensions;
 
 
 namespace car_kaashiv_web_app.Controllers
@@ -69,10 +70,10 @@ namespace car_kaashiv_web_app.Controllers
             }               
             TempData["Message"] = "You have been logged out.";
             TempData["MessageType"] = "warning"; // for css
-            return RedirectToAction("Login", "User");
+            return RedirectToAction("Index", "Home");
         }
 
-        [AllowAnonymous]
+
         public IActionResult UserDashboard()
         {          
             return View();
@@ -117,14 +118,13 @@ namespace car_kaashiv_web_app.Controllers
                 new ClaimsPrincipal(claimsIdentity), authProperties);
             TempData["Message"] = "User registered successfully!";
             var isAuth = User.Identity?.IsAuthenticated ?? false;           
-            _logger.LogInformation("User {UserName} with phone {Phone} logged in at {Time}", user?.Name, user?.Phone, DateTime.UtcNow);
+            _logger.LogInformation("User {UserName} with phone {Phone} logged in at {Time}", user?.Name, user?.Phone, DateTime.UtcNow.ToIST());
             return RedirectToAction("UserDashboard", "User");     
         }
-
+       
         [HttpPost]
         [AllowAnonymous]   //<--Marking an action with [AllowAnonymous] explicitly overrides this rule and skips the authentication checks. 
-        [ValidateAntiForgeryToken] // <--- Anti-forgery check here
-        //cross-site requests tokens,
+        [ValidateAntiForgeryToken] // <--- Anti-forgery check here avoid cross-site requests tokens     
         public async Task<IActionResult> Login(LoginDto dto)
         {          
             if (!ModelState.IsValid) return View(dto);
@@ -152,7 +152,7 @@ namespace car_kaashiv_web_app.Controllers
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
                 new ClaimsPrincipal(claimsIdentity),authProperties);           
             // Log user info instead of session
-            _logger.LogInformation("User {UserName} with phone {Phone} logged in at {Time}",user?.Name,user?.Phone,DateTime.UtcNow);         
+            _logger.LogInformation("User {UserName} with phone {Phone} logged in at {Time}",user?.Name,user?.Phone,DateTime.UtcNow.ToIST());         
             TempData["Message"] = "Login successful!";
             TempData["MessageType"] = "success";
             var name = User.Identity?.Name; // comes from ClaimTypes.Name

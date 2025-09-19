@@ -13,12 +13,17 @@ namespace car_kaashiv_web_app.Controllers
         {
             _logger = logger;
         }
-        [AllowAnonymous]
+        [AllowAnonymous] //<--Marking an action with [AllowAnonymous] explicitly overrides this rule and skips the authentication checks.
         public IActionResult Privacy()
         {
             return View();
         }
-     
+        [AllowAnonymous]//<--Marking an action with [AllowAnonymous] explicitly overrides this rule and skips the authentication checks.
+        public IActionResult Index()
+        {
+            return View();
+        }
+
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {

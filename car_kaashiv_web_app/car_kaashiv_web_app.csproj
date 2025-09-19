@@ -23,7 +23,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Remove="Views\Home\Index.cshtml" />
     <Content Remove="Views\Home\razor page mapley.cshtml" />
     <Content Remove="Views\Home\_ViewStart.cshtml" />
     <Content Remove="Views\Home\_ViewStart1.cshtml" />

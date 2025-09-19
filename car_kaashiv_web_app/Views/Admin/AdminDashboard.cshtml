@@ -1,0 +1,30 @@
+﻿@{
+    ViewData["Title"] = "Admin Dashboard";
+}
+
+
+@if(TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show mt-3 ">
+        @TempData["ErrorMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+<div class="container mt-5">
+    <h2 class="text-center">Admin Dashboard</h2>
+    <p class="text-muted text-center">Manage employees and view reports here.</p>
+</div>
+
+<form asp-controller="Admin" asp-action="Edit" method="get" class="d-flex align-items-center gap-2 mt-5">
+    <label for="employeeId" class="me-2 mb-0">Search Employee by ID</label>
+    <input type="text" id="employeeId" name="id" class="form-control w-auto" placeholder="Enter Employee Number" required />
+    <button type="submit" class="btn btn-outline-primary">Employee Search</button>
+</form>
+<div class="d-flex align-items-center gap-2 mt-5">
+    <a asp-controller="Admin" asp-action="Index" class="btn btn-outline-primary">Get all employee list</a>
+   
+ 
+</div>
+
+
+

@@ -5,9 +5,8 @@ namespace car_kaashiv_web_app.Models.Entities
 {
     public class TableUser 
     {
-        [Key]        
-        
-        
+        [Key]     
+                
         [Column("u_id")] // Db Column name
         public int Id {  get; set; }  // Primary key Auto-increment 
 
@@ -36,6 +35,7 @@ namespace car_kaashiv_web_app.Models.Entities
     public class TableEmployee
     {
         [Key]
+        [MinLength(3, ErrorMessage = "Name must 3 characters minimum,maximum 25 characters")]
         [Column("emp_id")] // Db backend column name, Primary key Auto-Increment
         public int Id { get; set; } //frontend  form field name, 
 
@@ -59,7 +59,7 @@ namespace car_kaashiv_web_app.Models.Entities
 
         [Required, StringLength(255)]
         [Column("emp_pass")]
-        public string? PasswordHash { get; set; }
+        public string? EmpPasswordHash { get; set; }
 
 
         [Column("idt")]  // date time on idt column  db 
