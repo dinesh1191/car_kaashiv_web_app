@@ -1,6 +1,8 @@
 ﻿@model IEnumerable<car_kaashiv_web_app.Models.Entities.TableEmployee>
 
-
+@{
+    ViewData["Title"] = "Index";
+ }
 
     <div class="mb-3">
         <a asp-controller="Admin" asp-action="AdminDashboard" class="btn btn-secondary">
@@ -11,6 +13,7 @@
 <p>
     <a asp-action="Create">Create New</a>
 </p>
+
 <table class="table">
     <thead>
         <tr>
@@ -26,9 +29,7 @@
             <th>
                 @Html.DisplayNameFor(model => model.Role)
             </th>
-            @* <th>
-                @Html.DisplayNameFor(model => model.EmpPasswordHash)
-            </th> *@
+          
             <th>
                 @Html.DisplayNameFor(model => model.CreatedAt)
             </th>
@@ -36,7 +37,7 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
+ @foreach (var item in Model) {
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.Name)
@@ -50,9 +51,7 @@
             <td>
                 @Html.DisplayFor(modelItem => item.Role)
             </td>
-            @* <td>
-                @Html.DisplayFor(modelItem => item.EmpPasswordHash)
-            </td> *@
+          
             <td>
                 @Html.DisplayFor(modelItem => item.CreatedAt)
             </td>

@@ -1,7 +1,10 @@
 ﻿using car_kaashiv_web_app.Data;
+using car_kaashiv_web_app.Extensions;
 using car_kaashiv_web_app.Models.DTOs;
 using car_kaashiv_web_app.Models.Entities;
+using car_kaashiv_web_app.Models.Enums;
 using car_kaashiv_web_app.Services;
+using car_kaashiv_web_app.Services.Extensions;
 using Humanizer;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -10,7 +13,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;// required for SelectListItem
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
-using car_kaashiv_web_app.Extensions;
 
 namespace car_kaashiv_web_app.Controllers
 
@@ -61,7 +63,7 @@ namespace car_kaashiv_web_app.Controllers
             {
                 return Json(false); //trigger the Remote ErrorMessage
             }
-            return Json(true);//passes validataion
+            return Json(true);      //passes validation
         }
 
 
@@ -86,7 +88,7 @@ namespace car_kaashiv_web_app.Controllers
                 Email = model.Email,
                 Role = model.Role,
                 EmpPasswordHash = BCrypt.Net.BCrypt.HashPassword(model.Password),
-                CreatedAt = DateTime.UtcNow
+                CreatedAt = DateTime.UtcNow.ToIST()
             };
             _context.tbl_emp.Add(employee);
             _context.SaveChanges();
@@ -100,10 +102,9 @@ namespace car_kaashiv_web_app.Controllers
             };
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
                 new ClaimsPrincipal(claimsIdentity), authProperties);
-            TempData["Message"] = "User registered successfully!";
+            TempData.setAlert("User registered successfully!", AlertTypes.Success);
             var isAuth = User.Identity?.IsAuthenticated ?? false;
-            Console.WriteLine("is authenticated", isAuth);
-            return RedirectToAction("EmployeeDashboard", "Employee"); // temporary path
+            return RedirectToAction("EmployeeDashboard", "Employee");
         }
 
         [HttpPost]
@@ -118,14 +119,14 @@ namespace car_kaashiv_web_app.Controllers
             var employee = await _context.tbl_emp.FirstOrDefaultAsync(emp => emp.Email == model.Email);
             if (employee == null)
             {
-                TempData["Message"] = "Employee not Registered";
+                TempData.setAlert("Employee not Registered!", AlertTypes.Error);                
                 return View("EmployeeLogin", model);
             }
 
             if (!BCrypt.Net.BCrypt.Verify(model.Password, employee.EmpPasswordHash))
             {
-                TempData["Message"] = "Invalid password.";
-                TempData["MessageType"] = "error";
+           
+                TempData.setAlert("Invalid Password!", AlertTypes.Error);                
                 return View("EmployeeLogin", model);
             }
             // Build claims
@@ -139,8 +140,7 @@ namespace car_kaashiv_web_app.Controllers
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
                 new ClaimsPrincipal(claimsIdentity), authProperties);
             _logger.LogInformation("Employee {UserName} with email {Email} logged in at {Time}", employee?.Name, employee?.Email, DateTime.UtcNow.ToIST());
-            TempData["Message"] = "Login successful!";
-            TempData["MessageType"] = "success";
+            TempData.setAlert("Login successful!", AlertTypes.Success);           
             var name = User.Identity?.Name; // comes from ClaimTypes.Name
             var phone = User.FindFirst(ClaimTypes.MobilePhone)?.Value;
             var email = User.FindFirst(ClaimTypes.Email)?.Value;

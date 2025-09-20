@@ -147,40 +147,7 @@
             form.action = '/' + controller + '/' + action + '/' + id;
             console.log("form",form, form.action);
         });
-       // for modal alert
-
-       // document.addEventListener("DOMContentLoaded",function(){
-       //     var alertMessage ='@TempData["AlertMessage"]';
-       //     var alertType = '@TempData["AlertType"]';
-
-       //     if(alertMessage){
-       //         var modalBody = document.getElementById("alertModalBody");
-       //         var modalHeader = document.querySelector("#alertModal .modal-header");
-
-       //         modalBody.innerText = alertMessage;
-
-       //         Change header color based on alert type
-
-       //         modalHeader.classList.remove("bg-primary","bg-success","bg-danger","bg-warning");
-       //         if(alertType === "Success")modalHeader.classList.add("bg-sucess","text-white");
-       //         else if (alertType === "Error")modalHeader.classList.add("bg-danger", "text-white");
-       //         else if (alertType === "Warning")modalHeader.classList.add("bg-warning","text-white");
-       //         else modalHeader.classList.add("bg-primary","text-white");
-
-       //         var alertModal = new bootstrap.Modal(document.getElementById('alertModal'));
-       //         alertModal.show()
-       //     }
-       // });
-
-
-
-
-
-
-
-
     </script>
-
     @await RenderSectionAsync("Scripts", required: false);    
 </body>
 </html>

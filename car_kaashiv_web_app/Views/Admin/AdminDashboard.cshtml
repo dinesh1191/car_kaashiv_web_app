@@ -1,15 +1,6 @@
 ﻿@{
     ViewData["Title"] = "Admin Dashboard";
 }
-
-
-@if(TempData["ErrorMessage"] != null)
-{
-    <div class="alert alert-danger alert-dismissible fade show mt-3 ">
-        @TempData["ErrorMessage"]
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-}
 <div class="container mt-5">
     <h2 class="text-center">Admin Dashboard</h2>
     <p class="text-muted text-center">Manage employees and view reports here.</p>

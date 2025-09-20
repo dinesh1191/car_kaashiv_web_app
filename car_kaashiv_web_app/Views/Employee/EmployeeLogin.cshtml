@@ -4,16 +4,7 @@
     ViewData["Title"] = "Login";
  }
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - car_kaashiv_web_app</title
-</head>
-
-<body>
-    <div class="text-center">
+   <div class="text-center">
         <h1 class="display-4">Welcome to Cars Kaashiv </h1>  
         <p>"The Right Fix for Your Automotive Needs."</p>
     </div>
@@ -21,13 +12,7 @@
     <div class="container mt-5 d-flex justify-content-center">
         <div class="card p-4 shadow-lg" style="max-width:400px;width:100%">
               
-            <h2 class="text-center mb-4">Employee Login</h2>
-              @if(TempData["Message"] != null)
-                {
-                 var type = TempData["MessageType"]?.ToString();
-                 var cssClass = type == "success" ? "success" : "alert-danger";
-                 <div class="alert @cssClass">⚠ @TempData["Message"] </div>                     
-                 }
+            <h2 class="text-center mb-4">Employee Login</h2>             
             <form asp-action="Login" asp-controller="User" method="post">
                 @Html.AntiForgeryToken()
 
@@ -54,8 +39,7 @@
             </form>
         </div>
     </div>
-</body>
-</html>
+
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
 

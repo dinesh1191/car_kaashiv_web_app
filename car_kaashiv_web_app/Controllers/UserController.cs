@@ -1,8 +1,11 @@
 ﻿using BCrypt.Net;
-using System.Security.Claims;
 using car_kaashiv_web_app.Data;
+using car_kaashiv_web_app.Extensions;
 using car_kaashiv_web_app.Models.DTOs;
 using car_kaashiv_web_app.Models.Entities;
+using car_kaashiv_web_app.Models.Enums;
+using car_kaashiv_web_app.Services;
+using car_kaashiv_web_app.Services.Extensions;
 using Dapper;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -13,10 +16,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System.Data;
 using System.Numerics;
-
+using System.Security.Claims;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Model;
-using car_kaashiv_web_app.Services;
-using car_kaashiv_web_app.Extensions;
 
 
 namespace car_kaashiv_web_app.Controllers
@@ -52,10 +53,8 @@ namespace car_kaashiv_web_app.Controllers
         [HttpGet]
         [AllowAnonymous]
         public IActionResult Login()//<--Marking an action with [AllowAnonymous] explicitly overrides this rule and skips the authentication checks.
-        {
-            
-            return View();
-                    
+        {            
+            return View();                   
         }
         
         public IActionResult Logout()
@@ -67,9 +66,8 @@ namespace car_kaashiv_web_app.Controllers
             foreach(var cookie in Request.Cookies.Keys)
             {
                 Response.Cookies.Delete(cookie);
-            }               
-            TempData["Message"] = "You have been logged out.";
-            TempData["MessageType"] = "warning"; // for css
+            }           
+            TempData.setAlert("You have been logged out.", AlertTypes.Error);
             return RedirectToAction("Index", "Home");
         }
 
@@ -102,7 +100,7 @@ namespace car_kaashiv_web_app.Controllers
                 Phone = dto.Phone,
                 Email = dto.Email,
                 PasswordHash = BCrypt.Net.BCrypt.HashPassword(dto.Password),
-                CreatedAt = DateTime.UtcNow
+                CreatedAt = DateTime.UtcNow.ToIST()
             };
             _context.tbl_user.Add(user);
             await _context.SaveChangesAsync(); // wait till db execution completes
@@ -115,9 +113,9 @@ namespace car_kaashiv_web_app.Controllers
                 ExpiresUtc = DateTimeOffset.UtcNow.AddHours(1)
             };
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
-                new ClaimsPrincipal(claimsIdentity), authProperties);
-            TempData["Message"] = "User registered successfully!";
-            var isAuth = User.Identity?.IsAuthenticated ?? false;           
+                  new ClaimsPrincipal(claimsIdentity), authProperties);          
+            TempData.setAlert("User registered successfully!.", AlertTypes.Success);
+                  var isAuth = User.Identity?.IsAuthenticated ?? false;           
             _logger.LogInformation("User {UserName} with phone {Phone} logged in at {Time}", user?.Name, user?.Phone, DateTime.UtcNow.ToIST());
             return RedirectToAction("UserDashboard", "User");     
         }
@@ -131,14 +129,13 @@ namespace car_kaashiv_web_app.Controllers
             // Check user existence on table by unique phone number  
             var user = await _context.tbl_user.FirstOrDefaultAsync(u => u.Phone == dto.Phone);   // Query will run SELECT TOP(1) *FROM tbl_user WHERE Phone = @p0     
             if (user == null)
-            {
-                TempData["Message"] = "User does not exist in database.";
+            {       
+                TempData.setAlert("User does not exist in database.", AlertTypes.Error);
                 return View(dto);
             }
             if (!BCrypt.Net.BCrypt.Verify(dto.Password, user.PasswordHash))
             {
-                TempData["Message"] = "Invalid password.";
-                TempData["MessageType"] = "error";
+                TempData.setAlert("Invalid password.", AlertTypes.Error);
                 return View(dto);
             }
             // Build claims
@@ -152,9 +149,8 @@ namespace car_kaashiv_web_app.Controllers
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
                 new ClaimsPrincipal(claimsIdentity),authProperties);           
             // Log user info instead of session
-            _logger.LogInformation("User {UserName} with phone {Phone} logged in at {Time}",user?.Name,user?.Phone,DateTime.UtcNow.ToIST());         
-            TempData["Message"] = "Login successful!";
-            TempData["MessageType"] = "success";
+            _logger.LogInformation("User {UserName} with phone {Phone} logged in at {Time}",user?.Name,user?.Phone,DateTime.UtcNow.ToIST());        
+            TempData.setAlert("Login successful!", AlertTypes.Success);
             var name = User.Identity?.Name; // comes from ClaimTypes.Name
             var phone = User.FindFirst(ClaimTypes.MobilePhone)?.Value;
             var email = User.FindFirst(ClaimTypes.Email)?.Value;

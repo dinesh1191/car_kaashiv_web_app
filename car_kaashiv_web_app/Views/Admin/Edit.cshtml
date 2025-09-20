@@ -1,4 +1,6 @@
-﻿@model car_kaashiv_web_app.Models.Entities.TableEmployee
+﻿@* @model car_kaashiv_web_app.Models.Entities.TableEmployee *@
+
+@model car_kaashiv_web_app.Models.DTOs.EmployeeEditDto
 
 
 @{
@@ -29,27 +31,21 @@
             </div>
             <div class="form-group">
                 <label asp-for="Role" class="control-label"></label>
-                <input asp-for="Role" class="form-control" />
+                @* <select asp-for="Role" asp-items="Model.RoleList" class="form-control"></select> *@
+                <select asp-for="Role" asp-items="Model.RoleList" class="form-control"></select>
                 <span asp-validation-for="Role" class="text-danger"></span>
-            </div>
-            @* <div class="form-group">
-                <label asp-for="EmpPasswordHash" class="control-label"></label>
-                <input asp-for="EmpPasswordHash" class="form-control" />
-                <span asp-validation-for="EmpPasswordHash" class="text-danger"></span>
-            </div> *@
+            </div>           
             <div class="form-group" type="hidden">
                 <label asp-for="CreatedAt" class="control-label"></label>
                 <input asp-for="CreatedAt" class="form-control"  />
                 <span asp-validation-for="CreatedAt" class="text-danger"></span>
             </div>
             <div class="form-group mt-3">
-                <input type="submit" value="Save" class="btn btn-primary" />
+                <button type="submit" class="btn btn-primary"> Update</button>
+                <a type="button" class="btn btn-secondary" asp-action="Index">Back to List</a>
             </div>
         </form>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
 

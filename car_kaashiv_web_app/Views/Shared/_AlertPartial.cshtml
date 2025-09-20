@@ -6,18 +6,36 @@
 
 @if (alert != null)
 {
-    var alertType = alert.Value.Type?.ToLower(); // e.g., "success", "error"
+    var alertType = alert.Value.Type?.ToLower(); // e.g., "Success", "Error"
     var bootstrapClass = alertType switch
     {
-        "success" => "alert-success",
-        "error" => "alert-danger",
-        "warning" => "alert-warning",
-        "info" => "alert-info",
-        _ => "alert-secondary"
+        "success"  => "alert-success",
+        "error"    => "alert-danger",
+        "warning"  => "alert-warning",
+        "info"     => "alert-info",
+        _          => "alert-secondary"
     };
 
-    <div class="alert @bootstrapClass alert-dismissible fade show mt-3" role="alert">
+    var timeout = alertType == "error" ? 6000 : 4000;
+
+    <div class="alert @bootstrapClass alert-dismissible fade show mt-3" role="alert" data-timeout= @timeout>
         @alert.Value.Message
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded",function(){
+              //Select all alerts on the page
+        var alerts = document.querySelectorAll(".alert[data-timeout]");
+
+        alerts.forEach(function(element){
+            var timeout = parseInt(element.getAttribute("data-timeout")) || 3000;
+            setTimeout(function() {
+                var bsAlert = new bootstrap.Alert(element);
+                bsAlert.close();
+            },timeout);
+        });
+      });           
+   
+    </script>
 }

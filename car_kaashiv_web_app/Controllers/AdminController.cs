@@ -1,4 +1,5 @@
 ﻿using car_kaashiv_web_app.Data;
+using car_kaashiv_web_app.Models.DTOs;
 using car_kaashiv_web_app.Models.Entities;
 using car_kaashiv_web_app.Models.Enums;
 using car_kaashiv_web_app.Services.Extensions;
@@ -6,6 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -77,54 +79,47 @@ namespace car_kaashiv_web_app.Controllers
         // GET: Admin/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null)
+            var employee = await _context.tbl_emp.FindAsync(id);
+            if (employee == null)
             {
-                TempData["ErrorMessage"] = "Employee Id not provided";              
-              }
-
-            var tableEmployee = await _context.tbl_emp.FindAsync(id);
-            if (tableEmployee == null)
-            {
-                TempData["ErrorMessage"] = "Employee not found!";
-                return RedirectToAction("AdminDashboard");              
-
+                TempData["ErrorMessage"] = "Employee Id does'nt exist";
             }
-            return View(tableEmployee);
-        }
+            //Mapping to dto
+            var dto = new EmployeeEditDto
+            {
+                Id = employee.Id,
+                Name = employee.Name,
+                Phone = employee.Phone,
+                Email = employee.Email,
+                Role = employee.Role,
+                CreatedAt = employee.CreatedAt
 
+            };
+            return View(dto);
+        }      
         // POST: Admin/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Phone,Email,Role,EmpPasswordHash,CreatedAt")] TableEmployee tableEmployee)
+        public async Task<IActionResult> Edit(EmployeeEditDto dto)
         {
-            if (id != tableEmployee.Id)
-            {
-                return NotFound();
-            }
+            if (!ModelState.IsValid)
+                return View(dto);
+            var employee = await _context.tbl_emp.FindAsync(dto.Id);
 
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(tableEmployee);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!TableEmployeeExists(tableEmployee.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
+            if (employee == null)
+            {                
+                TempData.setAlert("Employee Id does'nt exist!", AlertTypes.Success);
             }
-            return View(tableEmployee);
+            //manual mapping back to entity
+            employee.Name  = dto.Name;
+            employee.Phone = dto.Phone;
+            employee.Email = dto.Email;
+            employee.Role  = dto.Role;   
+            await _context.SaveChangesAsync();
+            TempData.setAlert("Updated Successfully!", AlertTypes.Success);
+            return RedirectToAction("AdminDashboard", "Admin");
         }
 
         // GET: Admin/Delete/5
@@ -152,7 +147,7 @@ namespace car_kaashiv_web_app.Controllers
 
         {
             TempData.setAlert("Employee deleted successfully", AlertTypes.Success);
-            TempData.setAlert("Employee deleted successfully", AlertTypes.Error);
+            //TempData.setAlert("Employee deleted successfully", AlertTypes.Error);
             //var tableEmployee = await _context.tbl_emp.FindAsync(id);
             //if (tableEmployee != null)
             //{
@@ -163,12 +158,10 @@ namespace car_kaashiv_web_app.Controllers
             ////return View();
             ////TempData.setAlert(AlertTypes.Success, "Employee deleted successfully");
             //TempData.setAlert("Employee deleted successfully", AlertTypes.Error);
+            await Task.Delay(1000);
             return RedirectToAction(nameof(Index));
         }
 
-        private bool TableEmployeeExists(int id)
-        {
-            return _context.tbl_emp.Any(e => e.Id == id);
-        }
+      
     }
 }

@@ -5,6 +5,8 @@ using car_kaashiv_web_app.Services.Extensions;
 using car_kaashiv_web_app.Models.Enums;
 
 var builder = WebApplication.CreateBuilder(args);
+// Environment is available here
+Console.WriteLine($"Running in: {builder.Environment.EnvironmentName}");
 
 // Register DbContext
 builder.Services.AddDbContext<AppDbContext>(options =>
@@ -35,6 +37,7 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
     {
         options.LoginPath = "/Home/Index";
         options.AccessDeniedPath = "/User/UnAuthorizes";
+      
     });
 
 builder.Services.AddAuthorization();
@@ -46,6 +49,7 @@ if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
 }
+
 
 app.UseStaticFiles();
 
