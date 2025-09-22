@@ -1,0 +1,70 @@
+﻿@* @model car_kaashiv_web_app.Models.DTOs.PartsAddDto *@
+@model IEnumerable<car_kaashiv_web_app.Models.Entities.TablePart>
+
+
+@{
+    ViewData["Title"] = "View Parts";
+}
+
+<h2>Parts List</h2>
+
+<form>
+    <div class="row mb-5">
+    <div class="col-md-2 mt-2">
+        <select name="searchBy" class="form-select">
+            <option value="id">By ID</option>
+            <option value="name">By Name</option>
+        </select>
+    </div>
+        <div class="col-md-2 mt-2 pt-1">
+        <input type="text" name="searchValue class=form-control" placeholder="Enter ID or Name"/>
+    </div>
+
+        <div class="col-md-8 mt-2 gap-5">
+        <button type="submit" class="btn btn-primary">Search</button>
+        <a asp-action="ViewParts" class="btn btn-secondary">Reset</a>
+    </div>
+    </div>
+</form>
+<!--Parts table-->
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Employee ID</th>
+            <th>Name</th>
+            <th>Details</th>
+            <th>Price</th>
+            <th>Stock</th>            
+            <th>Image</th>
+            <th>Date</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+  
+        {
+            <tr>
+                <td>@item.PartId</td>
+                <td>@item.PEmpId</td>
+                <td>@item.PName</td>
+                <td>@item.PDetail</td>
+                <td>@item.PPrice</td>
+                <td>@item.PStock</td>
+                <td>
+                    @if(!string.IsNullOrEmpty(item.ImagePath)){
+                        <img src="@item.ImagePath" style="width:80px; height:auto;"/>
+                    }
+                </td>                               
+                <td>@item.CreatedAt.ToString("dd-MMM-yyyy")</td> 
+                <td>
+                    <a asp-action="EditPart" asp-route-id="@item.PartId"
+                    class="btn btn-sm btn-warning">Edit</a>
+                    <a asp-action="DeletePart" asp-route-id="@item.PartId" 
+                    class="btn btn-sm btn-danger">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

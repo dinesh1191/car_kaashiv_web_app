@@ -5,6 +5,7 @@ namespace car_kaashiv_web_app.Extensions
     public static class DateTimeExtensions
     {
         private static readonly TimeZoneInfo istZone =
+
             TimeZoneInfo.FindSystemTimeZoneById(
 #if WINDOWS
                 "India Standard Time"
