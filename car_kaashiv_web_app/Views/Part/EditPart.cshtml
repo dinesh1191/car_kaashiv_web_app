@@ -1,28 +1,11 @@
-﻿@model car_kaashiv_web_app.Models.DTOs.PartsAddDto
+﻿@model car_kaashiv_web_app.Models.DTOs.PartEditDto
 
-<h4>Add New Part</h4>
-<hr />
-<!--navigating to a view—specifically, it performs a GET request-->
-<a class="btn btn-secondary" href="~/Employee/EmployeeDashboard">Back</a>
+@{
+    ViewData["Title"] = "Edit Part";
+}
 
-<form asp-action="EditPart">
-    <div class="row mb-5">
-        <div class="col-md-2 mt-2">
-            <select name="searchBy" class="form-select">
-                <option value="id">By ID</option>
-                <option value="name">By Name</option>
-            </select>
-        </div>
-        <div class="col-md-2 mt-2 pt-1">
-            <input type="text" name="searchValue class=form-control" placeholder="Enter ID or Name" />
-        </div>
-
-        <div class="col-md-8 mt-2 gap-5">
-            <button type="submit" class="btn btn-primary">Search</button>
-            <a asp-action="ViewParts" class="btn btn-secondary">Reset</a>
-        </div>
-    </div>
-</form>
+<a class="btn btn-secondary mb-1 mt-1" href="~/Part/PartList">Back</a>
+<h4>Edit Part</h4>
 <div class="row">
     <div class="col-md-4">
         <form asp-action="AddPart" enctype="multipart/form-data">
@@ -52,51 +35,70 @@
                 <input asp-for="PStock" class="form-control" />
                 <span asp-validation-for="PStock" class="text-danger"></span>
             </div>
-            <div class="form-group">
+            @* <div class="form-group">
                 <label asp-for="ImagePath" class="control-label">Image</label>
                 <input asp-for="ImagePath"
                        class="form-control" type="file"
                        accept=".jpg,.jpeg,.png"
                        onchange="previewImage(this)" />
                 <span asp-validation-for="ImagePath" class="text-danger"></span>
+            </div> *@
+            @if (!string.IsNullOrEmpty(Model.ImageUrl))
+            {
+                <div class="mt-5 mb-5">
+                    <img src="@Model.ImageUrl" style="width:100px;" />
+                </div>
+            }
+            <div class="form-group">
+                <label asp-for="ImageUpload" class="control-label mb-2">Upload new image</label>
+                <input  asp-for="ImageUpload"
+                       class="form-control"
+                       type="file"
+                       accept=".jpg,.jpeg,.png"
+                onchange="previewImage(this) />               
+                <span asp-validation-for="ImageUpload" class="text-danger"></span>
+               
             </div>
             <div class="mt-4 ">
                 <img id="imgPreview"
                      src="#"
                      alt="Image preview"
                      style="display:none; max-width:200px; margin-top:10px;" />
-            </div>         
+            </div>
+
+            <div class="form-group mt-3">
+                <input type="submit" value="Update" class="btn btn-primary" />
+            </div>
         </form>
     </div>
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="PartList">Back to List</a>
 </div>
 
 
-
-@section Scripts {  
+@section Scripts {
     @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");       
- 
-     }
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+
+    }
     <script>
-         function previewImage(input) {
-        if (input.files && input.files[0]) {           
-            var reader = new FileReader();
-            reader.onload = function (e) {
-                var output = document.getElementById('imgPreview');
-                output.src = e.target.result; // the base64 image string
-                output.style.display = 'block';
-            };
-            reader.readAsDataURL(input.files[0]);
-        } else {            
-            // Reset preview if no file selected
-            var output = document.getElementById('imgPreview');
-            output.src = "#";
-            output.style.display = 'none';
+           function previewImage(input) {
+          if (input.files && input.files[0]) {
+              var reader = new FileReader();
+              reader.onload = function (e) {
+                  var output = document.getElementById('imgPreview');
+                  output.src = e.target.result; // the base64 image string
+                  output.style.display = 'block';
+              };
+              reader.readAsDataURL(input.files[0]);
+          } else {
+              // Reset preview if no file selected
+              var output = document.getElementById('imgPreview');
+              output.src = "#";
+              output.style.display = 'none';
+          }
         }
-      }
     </script>
 }

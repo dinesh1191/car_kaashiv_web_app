@@ -78,7 +78,8 @@ namespace car_kaashiv_web_app.Controllers
 
         // GET: Admin/Edit/5
         public async Task<IActionResult> Edit(int? id)
-        {             var employee = await _context.tbl_emp.FindAsync(id);
+        {   
+            var employee = await _context.tbl_emp.FindAsync(id);
             if (employee == null)
             {
                 

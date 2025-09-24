@@ -6,6 +6,7 @@ namespace car_kaashiv_web_app.Services
 {
     public class ClaimsHelper
     {
+        // User claim builder
         public static List<Claim> BuildUserClaims(TableUser user)
         {
             if (user == null)
@@ -17,6 +18,8 @@ namespace car_kaashiv_web_app.Services
                 new Claim(ClaimTypes.MobilePhone, user?.Phone ?? string.Empty)   
             };
         }
+
+        // Employee calim builder
         public static List<Claim> BuildUserClaimsEmp(TableEmployee employee)
         {
             if (employee == null)
@@ -26,7 +29,8 @@ namespace car_kaashiv_web_app.Services
             {
                 new Claim(ClaimTypes.Name, employee?.Name ?? string.Empty),
                 new Claim(ClaimTypes.MobilePhone, employee?.Phone ?? string.Empty),
-                new Claim(ClaimTypes.Role, employee?.Role ?? string.Empty)
+                new Claim(ClaimTypes.Role, employee?.Role ?? string.Empty),
+                new Claim("EmployeeId", employee!.Id.ToString()) //fetch the employee entity from DB (TableEmployee)
             };
         }
     }

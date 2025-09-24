@@ -35,7 +35,7 @@ namespace car_kaashiv_web_app.Models.Entities
     public class TableEmployee
     {
         [Key]
-        [MinLength(3, ErrorMessage = "Name must 3 characters minimum,maximum 25 characters")]
+       
         [Column("emp_id")] // Db backend column name, Primary key Auto-Increment
         public int Id { get; set; } //frontend  form field name, 
 

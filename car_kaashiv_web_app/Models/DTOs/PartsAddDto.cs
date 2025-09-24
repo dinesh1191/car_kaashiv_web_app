@@ -13,9 +13,8 @@ namespace car_kaashiv_web_app.Models.DTOs
         //[Required(ErrorMessage = "Part Id number required")]
         //public int? PartId { get; set; }
 
-        [MinLength(2, ErrorMessage = "Employee Id minimum three characters")]
-        [Required(ErrorMessage = "Name number required")]       
-        public string? PEmpId { get; set; }
+       [Required(ErrorMessage = "Emp id number required")]       
+        public int PEmpId { get; set; }
 
         [MinLength(3, ErrorMessage = "Name must 3 characters minimum,maximum 25 characters")]
         [Required(ErrorMessage = "Part name number required")]       

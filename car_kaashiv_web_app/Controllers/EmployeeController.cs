@@ -102,8 +102,7 @@ namespace car_kaashiv_web_app.Controllers
             };
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
                 new ClaimsPrincipal(claimsIdentity), authProperties);
-            TempData.setAlert("User registered successfully!", AlertTypes.Success);
-            var isAuth = User.Identity?.IsAuthenticated ?? false;
+            TempData.setAlert("Employee registered successfully!", AlertTypes.Success);          
             return RedirectToAction("EmployeeDashboard", "Employee");
         }
 
@@ -117,6 +116,7 @@ namespace car_kaashiv_web_app.Controllers
                 return View("EmployeeLogin", model);
             }
             var employee = await _context.tbl_emp.FirstOrDefaultAsync(emp => emp.Email == model.Email);
+           
             if (employee == null)
             {
                 TempData.setAlert("Employee not Registered!", AlertTypes.Error);                

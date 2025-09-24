@@ -3,12 +3,13 @@
 
 
 @{
-    ViewData["Title"] = "View Parts";
+    ViewData["Title"] = "Part List";
 }
+<a class="btn btn-secondary mt-2 mb-1" href="~/Employee/EmployeeDashboard">Back</a>
 
 <h2>Parts List</h2>
 
-<form>
+<form asp-action="EditPart">
     <div class="row mb-5">
     <div class="col-md-2 mt-2">
         <select name="searchBy" class="form-select">
