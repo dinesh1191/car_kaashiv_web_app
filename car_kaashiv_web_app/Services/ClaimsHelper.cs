@@ -15,7 +15,10 @@ namespace car_kaashiv_web_app.Services
             return new List<Claim>
             {
                 new Claim(ClaimTypes.Name, user?.Name ?? string.Empty),
-                new Claim(ClaimTypes.MobilePhone, user?.Phone ?? string.Empty)   
+                new Claim(ClaimTypes.MobilePhone, user?.Phone ?? string.Empty),
+                new Claim(ClaimTypes.NameIdentifier, user?.Id.ToString() ?? string.Empty)
+
+
             };
         }
 

@@ -1,6 +1,7 @@
 ﻿
-using System.ComponentModel.DataAnnotations;
+using Humanizer;
 using Microsoft.AspNetCore.Http;
+using System.ComponentModel.DataAnnotations;
 
 namespace car_kaashiv_web_app.Attributes
 {
@@ -14,12 +15,17 @@ namespace car_kaashiv_web_app.Attributes
         protected override ValidationResult IsValid(object? value, ValidationContext validationContext)
         {
             var file = value as IFormFile;
-            if(file !=null && file.Length > _maxFileSize)
+            if(file == null)
+            {
+                //no file uploaded, don't block model
+                return ValidationResult.Success!;
+                
+            }           
+         if(file.Length > _maxFileSize)
             {
                 return new ValidationResult($"Maximum allowed file size is {_maxFileSize / 1024 / 1024} MB.");
             }
             return ValidationResult.Success!;
-         }
-
+        }
     }
 }

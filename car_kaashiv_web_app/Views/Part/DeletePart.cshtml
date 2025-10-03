@@ -1,0 +1,37 @@
+﻿@model car_kaashiv_web_app.Models.Entities.TablePart
+
+
+@{
+    ViewData["Title"] = "Delete Part";
+}
+
+<h3>Are you sure you want to delete the part?</h3>
+
+<hr />
+
+<div>
+    <h4>@Model.PName</h4>
+    <dl class="row">
+        <dt col-sm-2>PartId</dt>
+        <dd col-sm-2>@Model.PartId</dd>
+        <dt col-sm-2>Price</dt>
+        <dd col-sm-2>@Model.PPrice</dd>
+        <dt col-sm-2>Stock</dt>
+        <dd col-sm-2>@Model.PStock</dd>
+        <dt col-sm-2>Detail</dt>
+        <dd col-sm-2>@Model.PDetail</dd>       
+        <dt col-sm-2>Image</dt>
+        <img src="@Model.ImagePath" alt="Part Image" style="width:100px; height:100px;" />
+    </dl>
+</div>
+
+ <form asp-action="Delete">    
+    <button type="button"
+        class="btn btn-outline-danger" 
+        data-bs-toggle="modal"
+        data-bs-target ="#confirmDeleteModal"
+        data-controller ="Part"
+        data-action="Delete"
+        data-id=@Model.PartId ><i class="bi bi-trash"></i> Delete</button>
+        <a type="button" class="btn btn-primary" asp-action="PartList"></i>Back to List</a>
+    </form>

@@ -29,15 +29,15 @@ namespace car_kaashiv_web_app.Models.DTOs
         [Required(ErrorMessage = "Part stock required")]
         public string? PStock { get; set; }
 
-        //[Required(ErrorMessage = "Part image is required")]
-        [AllowedExtensions(new string[] { ".jpg", ".jpeg", ".png" })]
+            //[Required(ErrorMessage = "Part image is required")]
+            //[AllowedExtensions(new string[] { ".jpg", ".jpeg", ".png" })]
 
-        [MaxFileSize(2 * 1024 * 1024)] // 2MB
+            //[MaxFileSize(2 * 1024 * 1024)] // 2MB
 
-        // For displaying existing image
-        // For uploading a new image
-        public IFormFile? ImageUpload { get; set; }
-        public string? ImageUrl { get; set; }
+            // For displaying existing image
+            // For uploading a new image
+            public IFormFile? ImageUpload { get; set; }
+            public string? ImageUrl { get; set; }
     }
 }
 

@@ -1,31 +1,16 @@
 ﻿@model car_kaashiv_web_app.Models.DTOs.PartsAddDto
 
+<a class="btn btn-secondary" href="~/Employee/EmployeeDashboard">Back</a>
+<hr />
 <h4>Add New Part</h4>
 <hr />
 <!--navigating to a view—specifically, it performs a GET request-->
-<a class="btn btn-secondary" href="~/Employee/EmployeeDashboard">Back</a>
 
-<form asp-action="EditPart">
-    <div class="row mb-5">
-        <div class="col-md-2 mt-2">
-            <select name="searchBy" class="form-select">
-                <option value="id">By ID</option>
-                <option value="name">By Name</option>
-            </select>
-        </div>
-        <div class="col-md-2 mt-2 pt-1">
-            <input type="text" name="searchValue class=form-control" placeholder="Enter ID or Name" />
-        </div>
 
-        <div class="col-md-8 mt-2 gap-5">
-            <button type="submit" class="btn btn-primary">Search</button>
-            <a asp-action="ViewParts" class="btn btn-secondary">Reset</a>
-        </div>
-    </div>
-</form>
+
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="AddPart" enctype="multipart/form-data">
+        <form asp-action="AddPart" asp-controller="Part" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="PEmpId" class="control-label">Employee ID</label>
@@ -65,14 +50,17 @@
                      src="#"
                      alt="Image preview"
                      style="display:none; max-width:200px; margin-top:10px;" />
-            </div>         
+            </div> 
+            <div>
+                <input type="submit" value="Create" class="btn btn-primary" />
+                <a asp-action="Index">Back to List</a>
+            </div>
+           
         </form>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
+
 
 
 

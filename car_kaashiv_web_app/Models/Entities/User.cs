@@ -3,39 +3,39 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace car_kaashiv_web_app.Models.Entities
 {
-    public class TableUser 
+    public class TableUser
     {
-        [Key]     
-                
+        [Key]
+
         [Column("u_id")] // Db Column name
-        public int Id {  get; set; }  // Primary key Auto-increment 
+        public int Id { get; set; }  // Primary key Auto-increment 
 
         [Required, StringLength(50)]
         [Column("u_name")]
         public string? Name { get; set; }    // non-nullable with default
 
-        [Required,StringLength(50)]
+        [Required, StringLength(50)]
         [Column("u_phone")]
-        public string?Phone { get; set; }
+        public string? Phone { get; set; }
 
 
-        [Required,StringLength(50)]
+        [Required, StringLength(50)]
         [Column("u_email")]
         public String? Email { get; set; }
-       
-        [Required,StringLength(255)]
+
+        [Required, StringLength(255)]
         [Column("u_pass")]
-        public string? PasswordHash { get; set; } 
+        public string? PasswordHash { get; set; }
 
         [Column("idt")]  // date time on idt column  db 
-        public  DateTime CreatedAt { get; set; }
+        public DateTime CreatedAt { get; set; }
 
     }
 
     public class TableEmployee
     {
         [Key]
-       
+
         [Column("emp_id")] // Db backend column name, Primary key Auto-Increment
         public int Id { get; set; } //frontend  form field name, 
 
@@ -70,10 +70,10 @@ namespace car_kaashiv_web_app.Models.Entities
 
     public class TablePart
 
-    {      
-        
+    {
+
         [Key]
-       
+
         [Column("part_id")] // Db backend column name, Primary key Auto-Increment
         public int PartId { get; set; } //frontend  form field name, 
 
@@ -93,7 +93,7 @@ namespace car_kaashiv_web_app.Models.Entities
 
         [Required, StringLength(100)]
         [Column("part_price")]
-        public string? PPrice{ get; set; }
+        public string? PPrice { get; set; }
 
 
         [Required, StringLength(50)]
@@ -108,5 +108,70 @@ namespace car_kaashiv_web_app.Models.Entities
         public DateTime CreatedAt { get; set; }
 
     }
+
+    public class TableCart
+    {
+         [Key]
+         [Column("cart_id")]
+         public int CartId { get; set; }
+        
+         [Column("u_id")]
+         public int UId {get; set;}
+
+         [Column ("part_id")]
+         public int PartID { get; set; }
+
+         [Column("quantity")]
+         public int Quantity {  get; set; }
+        
+         [Column("added_date")]
+         public DateTime? AddedDate { get; set; }            
+
+    }
+
+
+
+
+    public class TableOrders
+    {
+        [Key]
+        [Column("order_id")]
+        public string? OrderId { get; set; }
+
+        [Column("u_id")]
+        public string? UId { get; set; }
+        [Column("total_amount")]
+        public string? TotalAmount { get; set; }
+
+        [Column("status")]
+        public string? Status { get; set; }
+
+        [Column("created_at")]
+        public string? CreatedAt { get; set; }
+
+    }
+
+    public class TableOrderItems
+    {
+        [Key]
+        [Column("order_item_id")]
+        public string? OrderItemId { get; set; }
+
+        [Column("order_id")]
+        public string? OrderId { get; set; }
+        [Column("part_id")]
+        public string? PartId { get; set; }
+
+        [Column("quantity")]
+        public string? Quantity { get; set; }
+
+        [Column("unit_price")]
+        public string? UnitPrice { get; set; }
+        
+        [Column("total_price")]
+        public string? totalPrice { get; set; }
+
+    }
+
 }
 

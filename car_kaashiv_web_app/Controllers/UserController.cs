@@ -7,6 +7,7 @@ using car_kaashiv_web_app.Models.Enums;
 using car_kaashiv_web_app.Services;
 using car_kaashiv_web_app.Services.Extensions;
 using Dapper;
+using Humanizer;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
@@ -72,8 +73,15 @@ namespace car_kaashiv_web_app.Controllers
         }
 
 
-        public IActionResult UserDashboard()
-        {          
+        public IActionResult UserDashboard() // claim the user id while loading the page
+        {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+           
+            var name = User.Identity?.Name;
+            var phone = User.FindFirst(ClaimTypes.MobilePhone)?.Value;
+            var email = User.FindFirst(ClaimTypes.Email)?.Value;          
+            Console.WriteLine($"Check info{name} \n  {phone} \n {userId}");
+
             return View();
         }
 
@@ -105,7 +113,7 @@ namespace car_kaashiv_web_app.Controllers
             _context.tbl_user.Add(user);
             await _context.SaveChangesAsync(); // wait till db execution completes
             // Build claims for cookie authentication
-            var claims = ClaimsHelper.BuildUserClaims(user);
+            var claims = ClaimsHelper.BuildUserClaims(user);            
             var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
             var authProperties = new AuthenticationProperties
             {
@@ -119,6 +127,7 @@ namespace car_kaashiv_web_app.Controllers
             _logger.LogInformation("User {UserName} with phone {Phone} logged in at {Time}", user?.Name, user?.Phone, DateTime.UtcNow.ToIST());
             return RedirectToAction("UserDashboard", "User");     
         }
+
        
         [HttpPost]
         [AllowAnonymous]   //<--Marking an action with [AllowAnonymous] explicitly overrides this rule and skips the authentication checks. 
@@ -147,14 +156,9 @@ namespace car_kaashiv_web_app.Controllers
                 ExpiresUtc = DateTimeOffset.UtcNow.AddHours(1)
             };    
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
-                new ClaimsPrincipal(claimsIdentity),authProperties);           
-            // Log user info instead of session
-            _logger.LogInformation("User {UserName} with phone {Phone} logged in at {Time}",user?.Name,user?.Phone,DateTime.UtcNow.ToIST());        
-            TempData.setAlert("Login successful!", AlertTypes.Success);
-            var name = User.Identity?.Name; // comes from ClaimTypes.Name
-            var phone = User.FindFirst(ClaimTypes.MobilePhone)?.Value;
-            var email = User.FindFirst(ClaimTypes.Email)?.Value;
-            return RedirectToAction("UserDashboard", "User");       
+                new ClaimsPrincipal(claimsIdentity),authProperties);         
+            TempData.setAlert("Login successful!", AlertTypes.Success);         
+           return RedirectToAction("UserDashboard", "User");       
         }
     }
 }

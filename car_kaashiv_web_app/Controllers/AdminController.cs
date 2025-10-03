@@ -147,19 +147,17 @@ namespace car_kaashiv_web_app.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
 
         {
-            TempData.setAlert("Employee deleted successfully", AlertTypes.Success);
-            //TempData.setAlert("Employee deleted successfully", AlertTypes.Error);
-            //var tableEmployee = await _context.tbl_emp.FindAsync(id);
-            //if (tableEmployee != null)
-            //{
-            //    _context.tbl_emp.Remove(tableEmployee);
-            //}
+            var tableEmployee = await _context.tbl_emp.FindAsync(id);
+            if (tableEmployee != null)
+            {
+                _context.tbl_emp.Remove(tableEmployee);
+            }
 
-            //await _context.SaveChangesAsync();
-            ////return View();
-            ////TempData.setAlert(AlertTypes.Success, "Employee deleted successfully");
-            //TempData.setAlert("Employee deleted successfully", AlertTypes.Error);
-            await Task.Delay(1000);
+            await _context.SaveChangesAsync();
+            //return View();
+            //TempData.setAlert(AlertTypes.Success, "Employee deleted successfully");
+            TempData.setAlert("Employee deleted successfully", AlertTypes.Error);
+           
             return RedirectToAction(nameof(Index));
         }
 

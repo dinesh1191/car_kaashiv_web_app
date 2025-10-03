@@ -1,0 +1,77 @@
+﻿
+@{
+    ViewData["Title"] = "User Parts"; 
+}
+<style>
+    .card:hover{
+        transform:translateY(-5px);
+        transition:0.3s ease;
+        box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.15);
+    }
+</style>
+
+<h2>Car parts</h2>
+
+<div class="container mt-4">
+    <h2 class="mb-4 text-center">Available parts</h2>
+</div>
+<button onclick="showAlertModal('Test message', 'success')">Test Modal</button>
+
+<div class="row g-4"> <!---gutters (spacing) between columns automatically.--->
+    
+    @foreach (var part in Model)
+        {
+         <div class="col-6 col-sm-4 col-md-3 col-lg-2 d-flex justify-content-center">
+            <div class="card shadow-sm h-100 " style="width:100%;max-width:10rem;">
+                <img src="@part.ImagePath" alt="@part.PName" class="card-img-top img-fluid" style="object-fit :cover; height:150px" />
+
+                <div class="card-body  text-center">
+                    <h3 class="card-title">@part.PName</h3>
+                    <p class="card-text fw-bold text-primary mb-0">@part.PartId</p>
+                    <p class="card-text fw-bold text-primary mb-0">₹@part.PPrice</p>
+                    <input type="number" min="1" value="1" class="form-control" id="qty-@part.PartId" />
+                    
+                    <button class="btn btn-success mt-2 w-100" onclick="addToCart(@part.PartId,'@part.PName',@part.PPrice)">Add to cart</button>
+         
+                </div>              
+            </div>
+         </div>
+        }  
+</div>
+
+@section Scripts{
+    <partial name="_ValidationScriptsPartial" />
+    <script src="~/js/AlertHelper.js"></script>
+
+    <script>
+        console.log("script loads");
+        document.addEventListener("DOMContentLoaded", function () {
+            function addToCart(partId, partName, partPrice) {
+                const data = {
+                    id: partId,
+                    name: partName,
+                    price: partPrice
+                };
+                console.log("Sending to server:", data);
+                fetch('/Cart/AddToCart', {
+                    method: 'POST',
+                    headers: {
+                              'Content-Type': 'application/json'
+                             },
+                    body: JSON.stringify(data)
+                })
+                .then(res => res.json())
+                .then(response => {
+                    if (response.success) {
+                        console.log("console print is success", response.success);
+                        showAlertModal("Added to cart!", "success");
+                    } else {
+                        showAlertModal(response.message, "error");
+                    }
+                }).catch(err => console.error("Fetch error:", err));
+            }
+            //Make it globally accessible
+            window.addToCart = addToCart;
+        });
+    </script>
+}

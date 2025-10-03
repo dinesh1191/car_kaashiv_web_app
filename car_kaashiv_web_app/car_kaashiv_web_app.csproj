@@ -30,6 +30,7 @@
 
   <ItemGroup>
     <None Include="wwwroot\images\unauthorized.JPG" />
+    <None Include="wwwroot\js\AlertHelper.js" />
   </ItemGroup>
 
   <ItemGroup>

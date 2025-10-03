@@ -8,12 +8,19 @@
 <h4>Edit Part</h4>
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="AddPart" enctype="multipart/form-data">
+        <form asp-action="EditPart" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            
             <div class="form-group">
                 <label asp-for="PEmpId" class="control-label">Employee ID</label>
                 <input asp-for="PEmpId" class="form-control" readonly />
                 <span asp-validation-for="PEmpId" class="text-danger"></span>
+            </div>
+            
+            <div class="form-group">
+                <label asp-for="PartId" class="control-label">Part ID</label>
+                <input asp-for="PartId" class="form-control" readonly />
+                <span asp-validation-for="PartId" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="PName" class="control-label">Part Name</label>
@@ -45,17 +52,18 @@
             </div> *@
             @if (!string.IsNullOrEmpty(Model.ImageUrl))
             {
-                <div class="mt-5 mb-5">
-                    <img src="@Model.ImageUrl" style="width:100px;" />
+                <div class="form-group" >
+                    <label asp-for="ImageUrl" class="control-label">Part Image</label><br></br>
+                    <img asp-for="ImageUrl" src="@Model.ImageUrl" style="width:100px;" />
                 </div>
             }
             <div class="form-group">
-                <label asp-for="ImageUpload" class="control-label mb-2">Upload new image</label>
+                <label asp-for="ImageUpload" class="control-label mb-2">Upload new part image</label>
                 <input  asp-for="ImageUpload"
                        class="form-control"
                        type="file"
                        accept=".jpg,.jpeg,.png"
-                onchange="previewImage(this) />               
+                onchange="previewImage(this)" />               
                 <span asp-validation-for="ImageUpload" class="text-danger"></span>
                
             </div>

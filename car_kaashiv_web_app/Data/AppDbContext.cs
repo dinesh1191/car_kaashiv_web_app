@@ -10,5 +10,8 @@ namespace car_kaashiv_web_app.Data
         public DbSet<TableUser> tbl_user { get; set; } //Maps to user Table
         public DbSet<TableEmployee> tbl_emp  { get; set; } //Maps to employee table 
         public DbSet<TablePart> tbl_part { get; set; }  //Maps to parts table
+        public DbSet<TableCart> tbl_cart { get; set; }  //Maps to cart table
+        public DbSet<TableOrders> tbl_orders { get; set; }  //Maps to cart order
+        public DbSet<TableOrderItems> tbl_order_items { get; set; }  //Maps to cart orderItems
     }
 }

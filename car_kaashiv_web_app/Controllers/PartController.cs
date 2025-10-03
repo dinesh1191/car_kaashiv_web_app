@@ -14,6 +14,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System.Collections.Generic;
 using System.Net;
 using System.Security.Claims;
+using System.Threading.Tasks;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace car_kaashiv_web_app.Controllers
@@ -36,6 +37,15 @@ namespace car_kaashiv_web_app.Controllers
         {
             return View();
         }
+        public async Task <IActionResult> DeletePart(int id)
+        {
+            var part = await _context.tbl_part.FindAsync(id);
+            if (part == null)
+            {
+                TempData.setAlert("Product id not found", AlertTypes.Error);
+            }
+            return View(part);
+        }
         public ActionResult PartAdd()
         {
             //Fetch EmployeeId from claims (cookie)
@@ -47,10 +57,17 @@ namespace car_kaashiv_web_app.Controllers
             };
             return View(model);
         }
+ 
         public async Task <ActionResult> PartList()
         {
-            var parts = await _context.tbl_part.ToListAsync();// loads data form db
+            var parts = await _context.tbl_part.ToListAsync();// loads fresh data form db
             return View("ViewParts", parts); //Model is now a list, not null
+        }
+        //GET: Customer pars view page
+        public async Task<ActionResult> UserPartList()
+        {
+            var UParts = await _context.tbl_part.ToListAsync();// loads fresh data form db
+            return View("UserParts", UParts); //Model is now a list, not null
         }
 
         // GET: PartController/Details/5
@@ -68,7 +85,7 @@ namespace car_kaashiv_web_app.Controllers
         // POST: PartController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> AddPart(PartsAddDto model)
+        public async Task<IActionResult>AddPart(PartsAddDto model)
         {
             if (!ModelState.IsValid)
             {
@@ -84,13 +101,12 @@ namespace car_kaashiv_web_app.Controllers
                 Directory.CreateDirectory(uploadsFolder); // make sure folder exists
 
                 // get original filename safely
-                fileName = Path.GetFileName(model.ImagePath.FileName);
+                fileName     = Path.GetFileName(model.ImagePath.FileName);
                 var filePath = Path.Combine(uploadsFolder, model.ImagePath.FileName);
 
                 // Prevent overwrite
                 if (System.IO.File.Exists(filePath))
                 {
-
                     ModelState.AddModelError("ImagePath", "A file with this name already exists. Please rename your file and try again.");
                     TempData.setAlert("File Already Exists!", AlertTypes.Error);
                     return View("PartAdd", model);
@@ -119,8 +135,8 @@ namespace car_kaashiv_web_app.Controllers
            
             _context.tbl_part.Add(part);
             await _context.SaveChangesAsync();
-            TempData.setAlert("Part added successfully!", AlertTypes.Success);            
-            return RedirectToAction("Index","Home");                                
+            TempData.setAlert("Part added successfully!", AlertTypes.Success);
+            return RedirectToAction("PartList");    //reload fresh list Part list
         }
 
 
@@ -130,6 +146,7 @@ namespace car_kaashiv_web_app.Controllers
         {           
             // Safely fetch EmployeeId from claims
             var empId = int.Parse(User.FindFirst("EmployeeId")!.Value);
+            //  fetch part details from db
             var partEntity = await _context.tbl_part.FindAsync(id);
 
             if (partEntity == null)
@@ -141,32 +158,35 @@ namespace car_kaashiv_web_app.Controllers
             var partDto = new PartEditDto
             {
                 PEmpId       = empId,   // override with current employee ID
+                PartId       = partEntity.PartId,
                 PName        = partEntity.PName,
                 PDetail      = partEntity.PDetail,   
                 PPrice       = partEntity.PPrice,
                 PStock       = partEntity.PStock, 
                 ImageUrl     = partEntity.ImagePath,
                 
-            };        
+            };
+
             return View(partDto);          
         }
 
-        // POST: PartController/Edit/5  save the edited form
+        // POST: PartController/Edit/5  save the edited form(update method)
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditPart(int id,PartEditDto model)
         {
+            Console.WriteLine("id", id);
             var part = await _context.tbl_part.FindAsync(id);
             if (!ModelState.IsValid)
             {
-                TempData.setAlert("Error: Model state invalid", AlertTypes.Error);                      
-                return View(model);
+                TempData.setAlert("Error: Part Id not found", AlertTypes.Error);               
+                return RedirectToAction("PartList");
             }
             var partEntity = await _context.tbl_part.FindAsync(model.PartId);
             if (partEntity == null)
             {
                 TempData.setAlert("Part ID doesn't exist!", AlertTypes.Error);
-                return RedirectToAction("ViewParts");
+                return View(model); 
             }
             // Handle image upload if provided
             if (model.ImageUpload != null)
@@ -178,8 +198,10 @@ namespace car_kaashiv_web_app.Controllers
                     TempData.setAlert(result.ErrorMessage!, AlertTypes.Error);
                     return View(model);
                 }
-                partEntity.ImagePath = result.FilePath;
+                partEntity.ImagePath = result.FilePath;                
                 TempData.setAlert("Image updated successfully", AlertTypes.Success);
+
+                return RedirectToAction("PartList"); // part List return fresh data from db
             }
 
             // Update other fields
@@ -187,11 +209,11 @@ namespace car_kaashiv_web_app.Controllers
             partEntity.PDetail = model.PDetail;
             partEntity.PPrice = model.PPrice;
             partEntity.PStock = model.PStock;
-            partEntity.CreatedAt = DateTime.UtcNow.ToIST(); // separate column has to added in table for updation
-
+            partEntity.CreatedAt = DateTime.UtcNow.ToIST(); // separate column has to added in table for update          
+            _context.tbl_part.Update(partEntity);       
             await _context.SaveChangesAsync();
             TempData.setAlert("Part updated successfully!", AlertTypes.Success);
-            return RedirectToAction("Part","PartList");
+            return RedirectToAction("PartList");//reload fresh list Part list
         }
 
         // GET: PartController/Delete/5
@@ -203,16 +225,33 @@ namespace car_kaashiv_web_app.Controllers
         // POST: PartController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        public async Task<ActionResult> Delete(int id, IFormCollection collection)
         {
-            try
+
+            //{
+            //    var tableEmployee = await _context.tbl_emp.FindAsync(id);
+            //    if (tableEmployee != null)
+            //    {
+            //        _context.tbl_emp.Remove(tableEmployee);
+            //    }
+
+            //    await _context.SaveChangesAsync();
+            //    //return View();
+            //    //TempData.setAlert(AlertTypes.Success, "Employee deleted successfully");
+            //    TempData.setAlert("Employee deleted successfully", AlertTypes.Error);
+
+            //    return RedirectToAction(nameof(Index));
+
+
+
+            var tablePart = await _context.tbl_part.FindAsync(id);
+            if(tablePart != null)
             {
-                return RedirectToAction(nameof(Index));
+                _context.tbl_part.Remove(tablePart);
             }
-            catch
-            {
-                return View();
-            }
+            TempData.setAlert("Part deleted successfully", AlertTypes.Success);
+            await _context.SaveChangesAsync();
+            return RedirectToAction("PartList");
         }
 
         public async Task<IActionResult> ViewParts(string searchBy, string searchValue)
@@ -223,13 +262,13 @@ namespace car_kaashiv_web_app.Controllers
             {
                 if(searchBy == "id" && int.TryParse(searchValue, out int id))
                 {
-                    partQuery = partQuery.Where(p => p.PartId == id);
+                   partQuery = partQuery.Where(p => p.PartId == id);
                 }else if (searchBy == "name")
                 {
-                    partQuery = partQuery.Where(p => p.PName!.Contains(searchValue));
+                  partQuery = partQuery.Where(p => p.PName!.Contains(searchValue));
                 }
             }
-            //var parts = await partQuery.OrderByDescending(p => p.CreatedAt).ToListAsync();
+            var parts = await partQuery.OrderByDescending(p => p.CreatedAt).ToListAsync();
             return View();
 
         }

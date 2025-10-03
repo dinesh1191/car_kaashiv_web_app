@@ -11,6 +11,7 @@
 
 </head>
 @using Microsoft.AspNetCore.Http
+@using car_kaashiv_web_app.Services.Extensions
 
 <body>
     <header>
@@ -45,7 +46,9 @@
                                     <i class="bi bi-box-arrow-right"></i> Logout
                                 </button>
                             </li>
-                            <a asp-controller="Part" asp-action="PartAdd" class="btn btn-outline-primary">Add Part</a>
+                            @* <a asp-controller="Part" asp-action="PartList" class="btn btn-outline-primary">ViewParts</a>
+                            <a asp-controller="Part" asp-action="PartAdd" class="btn btn-outline-primary">Add Part</a> *@
+                            <a class="btn btn-primary" asp-controller="Part" asp-action="UserPartList">View car parts</a>
                             }
                             else
                             {
@@ -105,15 +108,15 @@
                 </div>
             </div>
         </div> 
-        <!-- Alert #Modal  -->
+        <!-- Alert #Modal  -->       
         <div class="modal fade" id="alertModal" tabindex="-1" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content border-0 shadow">
-                    <div class="modal-header bg-primary text-white">
-                        <h5>Notification</h5>
+                    <div class="modal-header text-white" id="alertModalHeader">
+                        <h5 class="modal-title" id="alertModalTitle">Notification</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                      </div>
-                    <div class="modal-body"></div>
+                        </div>
+                    <div class="modal-body" id="alertModalBody"></div>
                 </div>
             </div>
         </div>
@@ -131,11 +134,13 @@
             &copy; 2025 - car_kaashiv_web_app - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
     </footer>
+
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script> 
     <script>
-      // for modal controller
+      // for modal show/hide from controller
         var deleteModal = document.getElementById('confirmDeleteModal');
             deleteModal.addEventListener('show.bs.modal',function(event){
             var button = event.relatedTarget;
@@ -149,6 +154,50 @@
             console.log("form",form, form.action);
         });
     </script>
+    <!-- Load helper scripts globally -->
+    <script src="~/js/AlertHelper.js"></script>
+
+    <script>
+        // to call alert on ajax calls sucess/failure
+        document.addEventListener("DOMContentLoaded", function () {
+            const alertData = {
+                message: '@(TempData.GetAlert()?.Message ?? "")',
+                type: '@(TempData.GetAlert()?.Type ?? "")'
+            };
+
+            if (alertData.message) {
+                const modalBody = document.getElementById("alertModalBody");
+                const modalHeader = document.getElementById("alertModalHeader");
+                 // Set message
+                modalBody.innerText = alertData.message;
+
+                // Apply color based on type
+                modalHeader.classList.remove("bg-primary", "bg-success", "bg-danger", "bg-warning");
+                switch (alertData.type.toLowerCase()) {
+                    case "success":
+                        modalHeader.classList.add("bg-success");
+                        break;
+                    case "error":
+                        modalHeader.classList.add("bg-danger");
+                        break;
+                    case "warning":
+                        modalHeader.classList.add("bg-warning");
+                        break;
+                    default:
+                        modalHeader.classList.add("bg-primary");
+                        break;
+                }
+                const alertModal = new bootstrap.Modal(document.getElementById("alertModal"));
+                 // Show modal
+                alertModal.show();                
+            }
+        });
+    </script>
+ 
+
+    
+
+ 
     @await RenderSectionAsync("Scripts", required: false);    
 </body>
 </html>
