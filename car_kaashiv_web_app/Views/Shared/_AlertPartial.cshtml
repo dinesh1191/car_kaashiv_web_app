@@ -22,20 +22,20 @@
         @alert.Value.Message
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
-
-    <script>
-      document.addEventListener("DOMContentLoaded",function(){
-              //Select all alerts on the page
-        var alerts = document.querySelectorAll(".alert[data-timeout]");
-
-        alerts.forEach(function(element){
-            var timeout = parseInt(element.getAttribute("data-timeout")) || 3000;
-            setTimeout(function() {
-                var bsAlert = new bootstrap.Alert(element);
-                bsAlert.close();
-            },timeout);
-        });
-      });           
-   
-    </script>
 }
+
+<script>
+    document.addEventListener("DOMContentLoaded",function(){
+            //Select all alerts on the page
+      var alerts = document.querySelectorAll(".alert[data-timeout]");
+
+      alerts.forEach(function(element){
+          var timeout = parseInt(element.getAttribute("data-timeout")) || 3000;
+          setTimeout(function() {
+              var bsAlert = new bootstrap.Alert(element);
+              bsAlert.close();
+          },timeout);
+      });
+    });
+
+</script>

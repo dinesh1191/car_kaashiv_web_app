@@ -26,7 +26,7 @@ namespace car_kaashiv_web_app.Models.DTOs
 
 
         [Required(ErrorMessage = "Par price required")]
-        public string? PPrice { get; set; }
+        public decimal? PPrice { get; set; }
 
         [Required(ErrorMessage = "Part stock required")]
         public string? PStock { get; set; }

@@ -15,7 +15,11 @@
 <div class="container mt-4">
     <h2 class="mb-4 text-center">Available parts</h2>
 </div>
-<button onclick="showAlertModal('Test message', 'success')">Test Modal</button>
+
+   <div class="m-3">
+    @* <a href="#" class="btn btn-primary" id="loadCartBtn">Cart</a> *@   
+    <button class="btn btn-primary" onclick="loadCart()">View Cart</button>
+</div>
 
 <div class="row g-4"> <!---gutters (spacing) between columns automatically.--->
     
@@ -38,40 +42,28 @@
          </div>
         }  
 </div>
+<!---Cart Modal--->
+<div class="modal fade" id="cartModal" tabindex="-1" >
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Your cart 🛒</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="cartContent">
+                <!----partial will load here----->
+            </div>
+        </div>
+    </div>
+</div>
+<!--Cart icon button--->
+@* <button class="btn btn-outline-primary" onclick="loadCart()">🛒 Cart</button> *@
+<script src="~/js/removeFromCartItem.js"></script>
+<script src="~/js/AlertHelper.js"></script>
+<script src="~/js/loadCart.js"></script>
+<script src="~/js/removeFromCart.js"></script>
+
 
 @section Scripts{
-    <partial name="_ValidationScriptsPartial" />
-    <script src="~/js/AlertHelper.js"></script>
-
-    <script>
-        console.log("script loads");
-        document.addEventListener("DOMContentLoaded", function () {
-            function addToCart(partId, partName, partPrice) {
-                const data = {
-                    id: partId,
-                    name: partName,
-                    price: partPrice
-                };
-                console.log("Sending to server:", data);
-                fetch('/Cart/AddToCart', {
-                    method: 'POST',
-                    headers: {
-                              'Content-Type': 'application/json'
-                             },
-                    body: JSON.stringify(data)
-                })
-                .then(res => res.json())
-                .then(response => {
-                    if (response.success) {
-                        console.log("console print is success", response.success);
-                        showAlertModal("Added to cart!", "success");
-                    } else {
-                        showAlertModal(response.message, "error");
-                    }
-                }).catch(err => console.error("Fetch error:", err));
-            }
-            //Make it globally accessible
-            window.addToCart = addToCart;
-        });
-    </script>
+    <partial name="_ValidationScriptsPartial" />  
 }

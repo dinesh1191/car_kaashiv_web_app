@@ -91,9 +91,9 @@ namespace car_kaashiv_web_app.Models.Entities
         [Column("part_detail")]
         public string? PDetail { get; set; }
 
-        [Required, StringLength(100)]
+        [Required]
         [Column("part_price")]
-        public string? PPrice { get; set; }
+        public decimal? PPrice { get; set; }
 
 
         [Required, StringLength(50)]
@@ -140,14 +140,15 @@ namespace car_kaashiv_web_app.Models.Entities
 
         [Column("u_id")]
         public string? UId { get; set; }
+
         [Column("total_amount")]
-        public string? TotalAmount { get; set; }
+        public decimal? TotalAmount { get; set; }
 
         [Column("status")]
         public string? Status { get; set; }
 
         [Column("created_at")]
-        public string? CreatedAt { get; set; }
+        public DateTime? CreatedAt { get; set; }
 
     }
 
@@ -160,16 +161,16 @@ namespace car_kaashiv_web_app.Models.Entities
         [Column("order_id")]
         public string? OrderId { get; set; }
         [Column("part_id")]
-        public string? PartId { get; set; }
+        public int? PartId { get; set; }
 
         [Column("quantity")]
-        public string? Quantity { get; set; }
+        public int? Quantity { get; set; }
 
         [Column("unit_price")]
-        public string? UnitPrice { get; set; }
+        public decimal? UnitPrice { get; set; }
         
         [Column("total_price")]
-        public string? totalPrice { get; set; }
+        public decimal? totalPrice { get; set; }
 
     }
 

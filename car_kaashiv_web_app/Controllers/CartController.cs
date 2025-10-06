@@ -1,5 +1,6 @@
 ﻿using car_kaashiv_web_app.Data;
 using car_kaashiv_web_app.Extensions;
+using car_kaashiv_web_app.Models;
 using car_kaashiv_web_app.Models.DTOs;
 using car_kaashiv_web_app.Models.Entities;
 using car_kaashiv_web_app.Models.Enums;
@@ -7,6 +8,7 @@ using car_kaashiv_web_app.Services.Extensions;
 using Humanizer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.CodeAnalysis.FlowAnalysis.DataFlow.CopyAnalysis;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Security.Claims;
@@ -30,20 +32,124 @@ namespace car_kaashiv_web_app.Controllers
             _context = context;
             _logger = logger;
         }
+        // View cart items
+        [HttpGet]
+        public IActionResult ViewCart()
+        {
+            string? userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;//string? means the variable can hold a null value.         
+            if(!int.TryParse(userId, out int userIdInt))//userIdInt is the output variable that will hold the converted integer if the parsing succeeds.
+            {
+                NotFound();
+            }
+            var cartItems = from c in _context.tbl_cart
+                       join p in _context.tbl_part on c.PartID equals p.PartId
+                       where c.UId == userIdInt
+                       select new CartViewModel
+                       {
+                           //c.CartId,
+                           //p.PName,
+                           //p.PPrice,
+                           //c.Quantity,
+                           //Total = c.Quantity * p.PPrice
+                           CartId = c.CartId,
+                           PartName = p.PName,
+                           UnitPrice = p.PPrice,
+                           Quantity = c.Quantity,
+                           Total = c.Quantity * p.PPrice
+
+                       };
+
+            //return View(cartItems.ToList());
+            return PartialView("_CartPartial", cartItems.ToList());
+        }
+        //update quantity cart items
+        [HttpPost]
+        public IActionResult UpdateQuantity(int cartId,int quantity)
+        {
+            var item = _context.tbl_cart.FirstOrDefault(c => c.CartId == cartId);
+            if (item == null)
+            {
+                return NotFound();
+            }
+            item.Quantity = quantity;              
+            return Json(new {success = true});
+        }
+
+
+        [HttpPost]//Remove item from cart
+        public IActionResult RemoveFromCart(int cartId)
+        {
+            var item = _context.tbl_cart.FirstOrDefault(c => c.CartId == cartId);
+            if (item == null) {
+                return NotFound();            
+            }
+            _context.tbl_cart.Remove(item);
+            _context.SaveChanges();
+            return Json (new {success = true});
+        }
 
         [HttpPost]   
+        public IActionResult Checkout()
+        {
+            string? userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;//string? means the variable can hold a null value.
+            int.TryParse(userId, out int Uid);
+            var cartItems = _context.tbl_cart.Where(c => c.UId == Uid);
+           
+            if (!cartItems.Any()) {
+                return BadRequest("Cart Is empty");
+            }
+
+            // Create new order
+            var newOrder = new TableOrders //internal class on controllers
+            {
+                UId = userId,
+                TotalAmount = 0, //update below
+                Status = "Pending",
+                CreatedAt = DateTime.Now.ToIST(),
+            };
+            _context.tbl_orders.Add(newOrder);
+            _context.SaveChanges(); //save once to get OrderId
+            
+            decimal total = 0;
+             
+            // Copy cart items into OrderItems
+
+            foreach (var item in cartItems) {
+                var part = _context.tbl_part.Find(item.PartID);
+                if (part == null)  continue;
+                var lineTotal = part.PPrice * item.Quantity;
+                total += (decimal)lineTotal!;
+
+                _context.tbl_order_items.Add(new TableOrderItems
+                {
+                    OrderItemId = newOrder.OrderId,
+                    PartId = item.PartID,
+                    Quantity = item.Quantity,
+                    UnitPrice = part.PPrice,
+                    totalPrice = lineTotal
+                });
+            }
+
+            // Update total amount
+            newOrder.TotalAmount = total;
+            _context.SaveChanges();
+
+            // Clear the cart
+            _context.tbl_cart.Remove((TableCart)cartItems);
+            _context.SaveChanges();
+            return Json(new {success = true,orderId = newOrder.OrderId });  
+        }
+        // Add item to Cart
         public IActionResult AddToCart([FromBody] CartItemDto data)  
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            Console.WriteLine($"UserID:{userId}");
-
+            
             if (userId == null) { 
-            //return RedirectToAction("UnAuthorized","User" );
-              return Json(new { success = false, message = "Unauthorized" });
+            return RedirectToAction("UnAuthorized","User" );           
             }
-            //Check if the part exists
+            // Check if the part exists
             int partId = data.Id;
-            string PartName = data.Name;
+            string PartName = data.Name!;
             decimal partTotal = data.Price;
 
             var part = _context.tbl_part.FirstOrDefault(p => p.PartId == partId);          
@@ -78,5 +184,27 @@ namespace car_kaashiv_web_app.Controllers
             return Json(new { success = true,cartCount });
         }
 
+        public IActionResult GetCartPartial()
+        {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;           
+            if (!int.TryParse(userId, out int Uid))
+            {
+                return RedirectToAction("UnAuthorized", "User");
+            }
+
+
+            var cartItems = _context.tbl_cart
+                            .Where(c => c.UId == Uid)
+                            .Join(_context.tbl_part, c => c.PartID, p => p.PartId, (c, p) => new CartViewModel
+                            {
+                                CartId    = c.CartId,
+                                PartName  = p.PName,
+                                Quantity  = c.Quantity,
+                                UnitPrice = p.PPrice,
+                                Total     = p.PPrice * c.Quantity
+                            }).ToList();                          
+                                        
+           return PartialView("_CartPartial", cartItems);
+        }
     }
 }
