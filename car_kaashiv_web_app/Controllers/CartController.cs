@@ -230,7 +230,7 @@ namespace car_kaashiv_web_app.Controllers
             _context.tbl_cart.RemoveRange(cartItems);
             _context.SaveChanges();
             return Json(new { success = true, message = "Placed order",orderId = newOrder.OrderId });
-        }
+          }
 
 
 

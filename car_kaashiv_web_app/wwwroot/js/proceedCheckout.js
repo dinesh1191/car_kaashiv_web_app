@@ -1,4 +1,6 @@
-﻿const { Modal } = require("bootstrap");
+﻿
+
+//const { Modal } = require("bootstrap");
 
 window.ProceedCheckout = async function () {
     try {
@@ -13,11 +15,14 @@ window.ProceedCheckout = async function () {
         if (result.success) {            
             showToast(result.message, result.orderId, "success");
             console.log("Checkout successful. Order ID:", result.orderId);
+            // Redirect to CheckoutSuccess page
+            window.location.href = "/Order/CheckoutSuccess";
         }
         else {
-
+           
             showToast(result.orderId, "error");
             console.log("Checkout failed. Message:", result.orderId);
+           
         }
     }
     catch (err) {

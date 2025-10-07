@@ -50,7 +50,7 @@
                             @* <a asp-controller="Part" asp-action="PartList" class="btn btn-outline-primary">ViewParts</a>
                             <a asp-controller="Part" asp-action="PartAdd" class="btn btn-outline-primary">Add Part</a> *@
                             <a class="btn btn-primary" asp-controller="Part" asp-action="UserPartList">View car parts</a>
-                            <a class="btn btn-primary" asp-controller="Order" asp-action="OrderConfirm">Orders</a>
+                            <a class="btn btn-primary" asp-controller="Order" asp-action="CheckoutSuccess">Orders</a>
                         }
                             else
                             {
@@ -158,13 +158,11 @@
     <!-- Load helper scripts globally alert/toast -->
     <script src="~/js/AlertHelper.js"></script>
     <script src="~/js/ModalHelper.js"></script>
-    <lottie-player src="https://assets9.lottiefiles.com/packages/lf20_jcikwtux.json"
-                   background="transparent"
-                   speed="1"
-                   style="width: 300px; height: 300px;"
-                   loop
-                   autoplay>
-    </lottie-player>
+
+   
+    <script src="https://unpkg.com/lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+
+
 
  
      <script>

@@ -7,9 +7,10 @@ namespace car_kaashiv_web_app.Controllers
     public class OrderController : Controller
     {
         [HttpGet]
-        public IActionResult OrderConfirm() 
+        public IActionResult CheckoutSuccess()
         {
-            return RedirectToAction("CheckoutSuccess", "Order");
+            return View();
         }
+
     }
 }
