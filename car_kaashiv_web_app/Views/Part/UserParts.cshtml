@@ -16,8 +16,7 @@
     <h2 class="mb-4 text-center">Available parts</h2>
 </div>
 
-   <div class="m-3">
-    @* <a href="#" class="btn btn-primary" id="loadCartBtn">Cart</a> *@   
+   <div class="m-3"> 
     <button class="btn btn-primary" onclick="loadCart()">View Cart</button>
 </div>
 
@@ -43,7 +42,7 @@
         }  
 </div>
 <!---Cart Modal--->
-<div class="modal fade" id="cartModal" tabindex="-1" >
+<div class="modal fade" id="cartModal" tabindex="-1" aria-labelledby="cartModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
@@ -57,11 +56,15 @@
     </div>
 </div>
 <!--Cart icon button--->
-@* <button class="btn btn-outline-primary" onclick="loadCart()">🛒 Cart</button> *@
-<script src="~/js/removeFromCartItem.js"></script>
-<script src="~/js/AlertHelper.js"></script>
+<!--script should placed before section Scripts to avoid reference error--->
+<script src="~/js/alertHelper.js"></script>
 <script src="~/js/loadCart.js"></script>
+<script src="~/js/addToCart.js"></script>
+<script src="~/js/updateQuantity.js"></script>
 <script src="~/js/removeFromCart.js"></script>
+<script src="~/js/modalHelper.js"></script>
+<script src="~/js/proceedCheckout.js"></script>
+
 
 
 @section Scripts{

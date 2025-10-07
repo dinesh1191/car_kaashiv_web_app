@@ -6,8 +6,9 @@
     <title>@ViewData["Title"] - car_kaashiv_web_app</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" /> 
-   <link rel="stylesheet" href="~/car_kaashiv_web_app.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/car_kaashiv_web_app.styles.css" asp-append-version="true" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+   
 
 </head>
 @using Microsoft.AspNetCore.Http
@@ -49,7 +50,8 @@
                             @* <a asp-controller="Part" asp-action="PartList" class="btn btn-outline-primary">ViewParts</a>
                             <a asp-controller="Part" asp-action="PartAdd" class="btn btn-outline-primary">Add Part</a> *@
                             <a class="btn btn-primary" asp-controller="Part" asp-action="UserPartList">View car parts</a>
-                            }
+                            <a class="btn btn-primary" asp-controller="Order" asp-action="OrderConfirm">Orders</a>
+                        }
                             else
                             {
                          
@@ -120,6 +122,18 @@
                 </div>
             </div>
         </div>
+        <!-- Toast container -->
+        <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 1100">
+            <div id="globalToast" class="toast align-items-center border-0" role="alert" aria-live="assertive" aria-atomic="true">
+                <div class="d-flex">
+                    <div class="toast-body fw-semibold"></div>
+                    <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                </div>
+            </div>
+        </div>
+
+       
+
 
   </header>
     <div class="container">
@@ -128,7 +142,9 @@
             @RenderBody()           
         </main>
     </div>
- 
+
+
+   
     <footer class="border-top footer text-muted text-center">
         <div class="container ">
             &copy; 2025 - car_kaashiv_web_app - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
@@ -138,8 +154,20 @@
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script> 
-    <script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    <!-- Load helper scripts globally alert/toast -->
+    <script src="~/js/AlertHelper.js"></script>
+    <script src="~/js/ModalHelper.js"></script>
+    <lottie-player src="https://assets9.lottiefiles.com/packages/lf20_jcikwtux.json"
+                   background="transparent"
+                   speed="1"
+                   style="width: 300px; height: 300px;"
+                   loop
+                   autoplay>
+    </lottie-player>
+
+ 
+     <script>
       // for modal show/hide from controller
         var deleteModal = document.getElementById('confirmDeleteModal');
             deleteModal.addEventListener('show.bs.modal',function(event){
@@ -154,50 +182,8 @@
             console.log("form",form, form.action);
         });
     </script>
-    <!-- Load helper scripts globally -->
-    <script src="~/js/AlertHelper.js"></script>
-
-    <script>
-        // to call alert on ajax calls sucess/failure
-        document.addEventListener("DOMContentLoaded", function () {
-            const alertData = {
-                message: '@(TempData.GetAlert()?.Message ?? "")',
-                type: '@(TempData.GetAlert()?.Type ?? "")'
-            };
-
-            if (alertData.message) {
-                const modalBody = document.getElementById("alertModalBody");
-                const modalHeader = document.getElementById("alertModalHeader");
-                 // Set message
-                modalBody.innerText = alertData.message;
-
-                // Apply color based on type
-                modalHeader.classList.remove("bg-primary", "bg-success", "bg-danger", "bg-warning");
-                switch (alertData.type.toLowerCase()) {
-                    case "success":
-                        modalHeader.classList.add("bg-success");
-                        break;
-                    case "error":
-                        modalHeader.classList.add("bg-danger");
-                        break;
-                    case "warning":
-                        modalHeader.classList.add("bg-warning");
-                        break;
-                    default:
-                        modalHeader.classList.add("bg-primary");
-                        break;
-                }
-                const alertModal = new bootstrap.Modal(document.getElementById("alertModal"));
-                 // Show modal
-                alertModal.show();                
-            }
-        });
-    </script>
  
-
-    
-
- 
+   
     @await RenderSectionAsync("Scripts", required: false);    
 </body>
 </html>

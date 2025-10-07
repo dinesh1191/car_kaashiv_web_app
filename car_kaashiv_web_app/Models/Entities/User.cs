@@ -135,8 +135,9 @@ namespace car_kaashiv_web_app.Models.Entities
     public class TableOrders
     {
         [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Column("order_id")]
-        public string? OrderId { get; set; }
+        public int? OrderId { get; set; }
 
         [Column("u_id")]
         public string? UId { get; set; }
@@ -156,10 +157,11 @@ namespace car_kaashiv_web_app.Models.Entities
     {
         [Key]
         [Column("order_item_id")]
-        public string? OrderItemId { get; set; }
+        public int? OrderItemId { get; set; }
 
         [Column("order_id")]
-        public string? OrderId { get; set; }
+        public int? OrderId { get; set; }
+
         [Column("part_id")]
         public int? PartId { get; set; }
 

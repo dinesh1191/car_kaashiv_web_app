@@ -1,20 +1,22 @@
 ﻿
-window.removeFromCart = function (cartId) {
-    console.log("Removing item:", cartId);
-    fetch(`/Cart/RemoveFromCart?cartId=${cartId}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' }
-    })
-        .then(res => res.json())
-        .then(response => {
-            if (response.success) {
-                showAlertModal("Item removed!", "success");
-                loadCart();
-            } else {
-                showAlertModal(response.message, "error");
-            }
-        })
-        .catch(err => {
-            console.error("Error removing item:", err);
+// js with async await method
+window.removeFromCart = async function (cartId) {  
+    try {   
+        const response = await fetch(`/Cart/RemoveFromCart`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(cartId) // passing cartId on body to controller action
         });
+        if (!response.ok) {
+            throw Error(`Failed to remove item.Status: ${response.status}`);
+        }
+        const result = await response.json(); 
+        showToast(result.message, "success");
+        loadCart();  
+    }
+        catch(err) {
+        console.log("Error removing item:", err);
+        showToast("Something went wrong.Please try again.", "error");
+        };
+
 };

@@ -1,26 +1,33 @@
 ﻿
 // add to cart function
-    window.addToCart = function(partId, partName, partPrice){
-        const data = {
-            id: partId,
-            name: partName,
-            price: partPrice
-        };
-        console.log("Sending to server:", data);
-        fetch('/Cart/AddToCart', {
+window.addToCart = async function (partId, partName, partPrice) {
+    const data = {
+        id: partId,
+        name: partName,
+        price: partPrice
+    };
+  try {
+        const response = await fetch('/Cart/AddToCart', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify(data)
-        })
-            .then(res => res.json())
-            .then(response => {
-                if (response.success) {
-                    console.log("console print is success", response.success);
-                    showAlertModal("Added to cart!", "success");
-                } else {
-                    showAlertModal(response.message, "error");
-                }
-            }).catch(err => console.error("Fetch error:", err));
-    }   
+        });
+
+        if (!response.ok) throw new Error(`Server error: ${response.status}`);      
+
+        const result = await response.json();
+
+        if (result.success) {           
+            showToast(result.message, "success");
+            await loadCart();
+        } else {           
+            showToast(result.message, "error");
+        }
+
+    } catch (err) {        
+        showToast("Network error occurred", "error");
+    }
+};
+   

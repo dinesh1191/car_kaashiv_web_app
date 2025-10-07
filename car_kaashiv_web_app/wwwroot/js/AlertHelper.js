@@ -1,14 +1,13 @@
-﻿
-
-function showAlertModal(message, type = "primary") {
-    const modalElement = document.getElementById("alertModal");
+﻿function showAlertModal(message, type = "primary") {
+    const modalEl = document.getElementById("alertModal");
     const modalBody = document.getElementById("alertModalBody");
     const modalHeader = document.getElementById("alertModalHeader");
 
-    const modalInstance = bootstrap.Modal.getOrCreateInstance(modalElement);
+    // Get or create Bootstrap modal instance
+    const alertModal = bootstrap.Modal.getOrCreateInstance(modalEl);
 
-    // Normalize and map type to Bootstrap class
-    const typeMap = {
+    // Map alert types to Bootstrap background classes
+    const typeClassMap = {
         success: "bg-success",
         error: "bg-danger",
         danger: "bg-danger",
@@ -16,20 +15,60 @@ function showAlertModal(message, type = "primary") {
         info: "bg-info",
         primary: "bg-primary"
     };
-    const bgClass = typeMap[type.toLowerCase()] || "bg-primary";
-    // Reset and apply header color
+
+    // Determine the background class based on type
+    const bgClass = typeClassMap[type.toLowerCase()] || "bg-primary";
+
+    // Reset header background classes
     modalHeader.classList.remove("bg-primary", "bg-success", "bg-danger", "bg-warning", "bg-info");
     modalHeader.classList.add(bgClass);
 
-    // Set message BEFORE showing modal
-    modalBody.innerText = message;    
-    // Show modal
-    modalInstance.show();
-    // Auto-dismiss after specified duration
+    // Set the alert message
+    modalBody.innerText = message;
+
+    // Show the modal
+    alertModal.show();
+
+    // Auto-hide after 3 seconds
     setTimeout(() => {
-        modalInstance.hide();
+        alertModal.hide();
     }, 3000);
-  
+
+    // Cleanup lingering backdrop and scroll lock
+    modalEl.addEventListener("hidden.bs.modal", () => {
+        document.querySelectorAll(".modal-backdrop").forEach(backdrop => backdrop.remove());
+        document.body.classList.remove("modal-open");
+        document.body.style.paddingRight = "";
+    });
 }
+
+
+
+window.showToast = function (message, type = "success") {
+    const toastEl = document.getElementById("globalToast");
+    const toastBody = toastEl.querySelector(".toast-body");
+
+    const typeClassMap = {
+        success: "bg-success",
+        error: "bg-danger",
+        warning: "bg-warning",
+        info: "bg-info"
+    };
+
+    toastEl.className = "toast align-items-center border-0 text-white";
+    toastEl.classList.add(typeClassMap[type] || "bg-secondary");
+
+    toastBody.textContent = message;
+
+    const toast = new bootstrap.Toast(toastEl);
+    toast.show();
+
+    setTimeout(() => toast.hide(), 3000);
+};
+
+
+
+
+
 
 

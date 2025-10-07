@@ -226,24 +226,7 @@ namespace car_kaashiv_web_app.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Delete(int id, IFormCollection collection)
-        {
-
-            //{
-            //    var tableEmployee = await _context.tbl_emp.FindAsync(id);
-            //    if (tableEmployee != null)
-            //    {
-            //        _context.tbl_emp.Remove(tableEmployee);
-            //    }
-
-            //    await _context.SaveChangesAsync();
-            //    //return View();
-            //    //TempData.setAlert(AlertTypes.Success, "Employee deleted successfully");
-            //    TempData.setAlert("Employee deleted successfully", AlertTypes.Error);
-
-            //    return RedirectToAction(nameof(Index));
-
-
-
+        {          
             var tablePart = await _context.tbl_part.FindAsync(id);
             if(tablePart != null)
             {
@@ -254,6 +237,7 @@ namespace car_kaashiv_web_app.Controllers
             return RedirectToAction("PartList");
         }
 
+        // part search by employee 
         public async Task<IActionResult> ViewParts(string searchBy, string searchValue)
         {
             var partQuery = _context.tbl_part.AsQueryable();
@@ -272,5 +256,8 @@ namespace car_kaashiv_web_app.Controllers
             return View();
 
         }
+
+        // proceed to check by user(customer)
+
     }
 }

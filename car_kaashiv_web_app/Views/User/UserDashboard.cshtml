@@ -2,15 +2,6 @@
 @{
     ViewData["Tittle"] = "User Dashboard";
 }
-@if (TempData["Message"] != null)
-{
-    <div class="alert alert-success">@TempData["Message"]</div>
-}
-<h2></h2>
-<h2></h2>
 <h2>Welcome, @User?.Identity?.Name</h2>
-
 <p>Your phone number: @User?.FindFirst(System.Security.Claims.ClaimTypes.MobilePhone)?.Value</p>
-
-
 <a class="btn btn-primary" asp-controller="Part" asp-action="UserPartList">View car parts</a>
