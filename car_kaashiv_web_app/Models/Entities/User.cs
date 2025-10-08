@@ -98,7 +98,7 @@ namespace car_kaashiv_web_app.Models.Entities
 
         [Required, StringLength(50)]
         [Column("part_stock")]
-        public string? PStock { get; set; }
+        public int? PStock { get; set; }
 
         [Required, StringLength(100)]
         [Column("part_image")]
@@ -137,7 +137,7 @@ namespace car_kaashiv_web_app.Models.Entities
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Column("order_id")]
-        public int? OrderId { get; set; }
+        public int OrderId { get; set; }
 
         [Column("u_id")]
         public string? UId { get; set; }

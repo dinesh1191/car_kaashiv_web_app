@@ -220,11 +220,21 @@ namespace car_kaashiv_web_app.Controllers
                     UnitPrice = part.PPrice,
                     totalPrice = lineTotal
                 });
+
+                // Reduce stock
+                var partInventory = _context.tbl_part.FirstOrDefault(p => p.PartId == item.PartID);
+                if(partInventory != null)
+                {
+                    partInventory.PStock -= item.Quantity;
+                    if(partInventory.PStock <0) partInventory.PStock = 0; // Prevent negative stock
+                }
             }
 
             // Update total amount
             newOrder.TotalAmount = total;
             _context.SaveChanges();
+
+            
 
             // Clear the cart
             _context.tbl_cart.RemoveRange(cartItems);

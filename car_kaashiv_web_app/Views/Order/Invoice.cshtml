@@ -1,0 +1,57 @@
+﻿@model car_kaashiv_web_app.Models.InvoiceViewModel
+
+@{
+    ViewData["Title"] = "Invoice";   
+    // Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container mt-4 " style="max-width:800px;">
+    <div class="border p-4 rounded shadow">
+        <h2 class="text-center">Invoice</h2>
+        <hr />
+      
+        <div class="d-flex justify-content-between">
+            <div>
+                <h5>Invoice #: @Model.InvoiceNumber</h5>
+                <p>Date: @Model.OrderDate?.ToString("dd MMM YYYY")</p>                
+            </div>
+            <div class="text-end">
+                <h5>Customer</h5>
+                <p>@Model.UserName <br /> @Model.UserEmail</p>
+            </div>
+        </div>
+        <hr />
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Item</th>
+                    <th class="text-end">Price</th>
+                    <th class="text-end">Quantity</th>
+                    <th class="text-end">Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Items!)
+                {
+                    <tr>
+                        <td>@Model.UserName</td>
+                        <td >@item.PartName</td>
+                        <td>@item.Quantity</td>
+                        <td>₹@item.UnitPrice</td>
+                        <td>₹@item.Total</td>
+                    </tr>
+                }
+                <tr>                   
+            </tbody>
+        </table>
+        <div>
+            <h4 class="text-end">Grand Total: ₹@Model.TotalAmount</h4>
+        </div>
+        <div class="text-center mt-4">
+            <button class="btn btn-primary" onclick="window.print()">Print Invoice</button>
+        </div>
+
+
+    </div>
+   
+</div>

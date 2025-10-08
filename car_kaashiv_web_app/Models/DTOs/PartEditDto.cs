@@ -27,7 +27,7 @@ namespace car_kaashiv_web_app.Models.DTOs
         public decimal? PPrice { get; set; }
 
         [Required(ErrorMessage = "Part stock required")]
-        public string? PStock { get; set; }
+        public int? PStock { get; set; }
 
             //[Required(ErrorMessage = "Part image is required")]
             //[AllowedExtensions(new string[] { ".jpg", ".jpeg", ".png" })]
