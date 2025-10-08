@@ -140,7 +140,7 @@ namespace car_kaashiv_web_app.Models.Entities
         public int OrderId { get; set; }
 
         [Column("u_id")]
-        public string? UId { get; set; }
+        public int UId { get; set; }
 
         [Column("total_amount")]
         public decimal? TotalAmount { get; set; }

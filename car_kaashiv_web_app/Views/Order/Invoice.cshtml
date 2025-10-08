@@ -5,15 +5,16 @@
     // Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<div class="container mt-4 " style="max-width:800px;">
+<div id="invoice-container" class="container mt-4" style="max-width:800px;">
     <div class="border p-4 rounded shadow">
+        <h1 class="text-center">Car Kaashiv online spare shop</h1>
         <h2 class="text-center">Invoice</h2>
         <hr />
       
         <div class="d-flex justify-content-between">
             <div>
                 <h5>Invoice #: @Model.InvoiceNumber</h5>
-                <p>Date: @Model.OrderDate?.ToString("dd MMM YYYY")</p>                
+                <p>Date: @Model.OrderDate?.ToString("dd MMM yyyy")</p>                
             </div>
             <div class="text-end">
                 <h5>Customer</h5>
@@ -22,18 +23,19 @@
         </div>
         <hr />
         <table class="table table-bordered">
-            <thead>
+            <thead class="text-center">
                 <tr>
                     <th>Item</th>
-                    <th class="text-end">Price</th>
-                    <th class="text-end">Quantity</th>
-                    <th class="text-end">Total</th>
+                    <th>Price</th>
+                    <th>Quantity</th>
+                    <th>Unit price</th>
+                    <th>Total</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach (var item in Model.Items!)
                 {
-                    <tr>
+                    <tr class="text-center">
                         <td>@Model.UserName</td>
                         <td >@item.PartName</td>
                         <td>@item.Quantity</td>
@@ -48,10 +50,21 @@
             <h4 class="text-end">Grand Total: ₹@Model.TotalAmount</h4>
         </div>
         <div class="text-center mt-4">
-            <button class="btn btn-primary" onclick="window.print()">Print Invoice</button>
+            <button class="btn btn-primary" onclick="printInvoice()">Print Invoice</button>
         </div>
 
 
     </div>
    
 </div>
+
+ <script>
+     function printInvoice(){
+        const printContents = document.getElementById('invoice-container').innerHTML;
+        const originalContents = document.body.innerHTML;
+        document.body.innerHTML = printContents;
+        window.print();
+        document.body.innerHTML = originalContents;
+     }
+
+</script>

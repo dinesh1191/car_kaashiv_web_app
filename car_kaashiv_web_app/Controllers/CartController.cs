@@ -193,7 +193,7 @@ namespace car_kaashiv_web_app.Controllers
             // Create new order
             var newOrder = new TableOrders //internal class on controllers
             {
-                UId = userId,
+                UId = Uid,
                 TotalAmount = 0, //update below
                 Status = "Pending",
                 CreatedAt = DateTime.Now.ToIST(),
