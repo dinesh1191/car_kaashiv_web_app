@@ -1,4 +1,4 @@
-# Car Kaashiv App
+# Car Kaashiv Web App
 
 A full-stack **ASP.NET Core MVC** web application built to manage car listings, brands, and user interactions efficiently.  
 This project demonstrates **modern .NET development practices**, including MVC architecture, Entity Framework Core integration, and responsive UI design.
