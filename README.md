@@ -1,11 +1,11 @@
-# 🚗 Car Kaashiv App
+# Car Kaashiv App
 
 A full-stack **ASP.NET Core MVC** web application built to manage car listings, brands, and user interactions efficiently.  
 This project demonstrates **modern .NET development practices**, including MVC architecture, Entity Framework Core integration, and responsive UI design.
 
 ---
 
-## 🧩 Features
+## Features
 
 - View, add, edit, and delete car records  
 - Manage car parts and categories  
@@ -17,7 +17,7 @@ This project demonstrates **modern .NET development practices**, including MVC a
 
 ---
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 | Layer | Technology |
 |-------|-------------|
@@ -28,7 +28,7 @@ This project demonstrates **modern .NET development practices**, including MVC a
 
 ---
 
-## ⚙️ Setup & Installation
+## Setup & Installation
 
 ### 1. Clone the repository
 ```bash
