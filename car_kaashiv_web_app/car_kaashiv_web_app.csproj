@@ -29,10 +29,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Include="LICENSE.txt" />
-  </ItemGroup>
-
-  <ItemGroup>
     <None Include="wwwroot\images\unauthorized.JPG" />
     <None Include="wwwroot\js\alertHelper.js" />
   </ItemGroup>
