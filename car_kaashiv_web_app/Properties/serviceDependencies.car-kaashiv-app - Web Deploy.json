@@ -1,10 +1,11 @@
 {
   "dependencies": {
-    "mssql1": {
+    "mssql2": {
+      "serviceConnectorResourceId": "/subscriptions/[parameters('subscriptionId')]/resourceGroups/[parameters('serviceConnectorResourceGroupName')]/providers/Microsoft.Web/sites/car-kaashiv-app/providers/Microsoft.ServiceLinker/linkers/ConnectionStringsDatabaseConnection3_1E2B66D8D5",
       "secretStore": "AzureAppSettings",
-      "resourceId": null,
-      "type": "mssql.onprem",
-      "connectionId": "ConnectionStrings:DefaultConnection1"
+      "resourceId": "/subscriptions/[parameters('subscriptionId')]/resourceGroups/[parameters('resourceGroupName')]/providers/Microsoft.Sql/servers/dineshsqlserver/databases/mvcdb",
+      "type": "mssql.azure",
+      "connectionId": "ConnectionStrings:DatabaseConnection3"
     }
   }
 }

@@ -46,8 +46,8 @@ namespace car_kaashiv_web_app.Controllers
             return View("EmployeeRegister", model);
         }
 
-
-        [Authorize(Roles = "admin")]
+    
+    //    [Authorize(Roles = "admin")]
         public IActionResult EmployeeDashboard()
         {
 
