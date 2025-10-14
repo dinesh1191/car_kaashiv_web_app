@@ -3,7 +3,7 @@
 A full-stack **ASP.NET Core MVC** web application built to manage car listings, brands, and user interactions efficiently.  
 This project demonstrates **modern .NET development practices**, including MVC architecture, Entity Framework Core integration, and responsive UI design.
 ## Features
-- View, add, edit, and delete car records  
+- View, add, edit, and delete car spare parts records  
 - Manage car parts and categories  
 - SQL Server database integration using **Entity Framework Core**  
 -  RESTful API endpoints for easy data access  
