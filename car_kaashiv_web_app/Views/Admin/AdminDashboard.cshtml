@@ -1,6 +1,11 @@
 ﻿@{
     ViewData["Title"] = "Admin Dashboard";
 }
+@* <div class="mb-3">
+    <a asp-controller="Employee" asp-action="EmployeeDashboard" class="btn btn-secondary">
+        ← Back
+    </a>
+</div>
 <div class="container mt-5">
     <h2 class="text-center">Admin Dashboard</h2>
     <p class="text-muted text-center">Manage employees and view reports here.</p>
@@ -12,8 +17,49 @@
     <button type="submit" class="btn btn-outline-primary">Employee Search</button>
 </form>
 <div class="d-flex align-items-center gap-2 mt-5">
-    <a asp-controller="Part" asp-action="UserPartList" class="btn btn-outline-primary">Get all employee list</a>
+    <a asp-controller="Admin" asp-action="Index" class="btn btn-outline-primary">Get all employee list</a>
+</div> *@
+<!-- Back Button -->
+<div class="mb-4">
+    <a asp-controller="Employee" asp-action="EmployeeDashboard" class="btn btn-secondary">
+        ← Back to Employee Dashboard
+    </a>
 </div>
+
+<!-- Dashboard Header -->
+<div class="text-center mb-5">
+    <h2 class="fw-bold">Admin Dashboard</h2>
+    <p class="text-muted">Manage employees, search records, and view reports.</p>
+</div>
+
+<!-- Dashboard Cards -->
+<div class="row g-4 justify-content-center">
+    <!-- Search Employee -->
+    <div class="col-md-6">
+        <div class="card shadow-sm h-100">
+            <div class="card-body">
+                <h5 class="card-title">Search Employee</h5>
+                <p class="card-text">Find employee details by entering their ID number.</p>
+                <form asp-controller="Admin" asp-action="Edit" method="get" class="d-flex gap-2">
+                    <input type="text" id="employeeId" name="id" class="form-control" placeholder="Enter Employee ID" required />
+                    <button type="submit" class="btn btn-primary">Search</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- View All Employees -->
+    <div class="col-md-6">
+        <div class="card shadow-sm h-100">
+            <div class="card-body d-flex flex-column justify-content-between">
+                <h5 class="card-title">View All Employees</h5>
+                <p class="card-text">Browse the complete list of registered employees.</p>
+                <a asp-controller="Admin" asp-action="Index" class="btn btn-outline-primary mt-auto">View List</a>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 
 
